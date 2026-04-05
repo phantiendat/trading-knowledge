@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nền Tảng Cơ Bản — DSmart Trading</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400&family=Space+Mono:wght@400;700&family=Be+Vietnam+Pro:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0a0c10; --surface:#111318; --surface2:#181c24; --border:#1e2430;
+  --text:#e8eaf0; --text-dim:#6b7280; --text-muted:#374151;
+  --accent:#f59e0b; --green:#10b981; --red:#ef4444; --blue:#3b82f6; --purple:#a78bfa;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Be Vietnam Pro',sans-serif;font-weight:300;line-height:1.7;overflow-x:hidden;}
+
+/* HERO */
+.hero{padding:5rem 2rem 3rem;text-align:center;position:relative;overflow:hidden;border-bottom:1px solid var(--border);}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 50% 0%,rgba(59,130,246,0.07) 0%,transparent 70%);pointer-events:none;}
+.hero-label{font-family:'Space Mono',monospace;font-size:0.65rem;letter-spacing:0.2em;color:var(--blue);text-transform:uppercase;margin-bottom:1rem;}
+.hero h1{font-family:'Noto Serif JP',serif;font-size:clamp(2rem,6vw,3.5rem);font-weight:300;line-height:1.15;margin-bottom:1rem;}
+.hero h1 span{color:var(--blue);}
+.hero p{color:var(--text-dim);font-size:0.9rem;max-width:520px;margin:0 auto 2rem;}
+.back-btn{display:inline-flex;align-items:center;gap:0.4rem;color:var(--text-dim);text-decoration:none;font-size:0.78rem;border:1px solid var(--border);padding:0.5rem 1rem;border-radius:4px;transition:all 0.2s;margin:0 0.4rem;}
+.back-btn:hover{border-color:var(--blue);color:var(--blue);}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:100;background:rgba(10,12,16,0.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;overflow-x:auto;scrollbar-width:none;}
+nav::-webkit-scrollbar{display:none;}
+.nav-logo{font-family:'Space Mono',monospace;font-size:0.72rem;color:var(--blue);white-space:nowrap;padding:1rem 1.5rem 1rem 0;border-right:1px solid var(--border);margin-right:1rem;}
+nav a{color:var(--text-dim);text-decoration:none;font-size:0.78rem;font-weight:500;padding:1rem 0.8rem;white-space:nowrap;transition:color 0.2s;border-bottom:2px solid transparent;}
+nav a:hover{color:var(--blue);border-bottom-color:var(--blue);}
+
+/* LAYOUT */
+main{max-width:1100px;margin:0 auto;padding:0 1.5rem 6rem;}
+section{padding:4rem 0 1rem;}
+.section-label{font-family:'Space Mono',monospace;font-size:0.65rem;letter-spacing:0.2em;color:var(--blue);text-transform:uppercase;margin-bottom:0.75rem;}
+h2{font-family:'Noto Serif JP',serif;font-size:clamp(1.4rem,3.5vw,2rem);font-weight:300;margin-bottom:0.5rem;}
+.section-desc{color:var(--text-dim);font-size:0.88rem;max-width:640px;margin-bottom:2.5rem;}
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:0.75rem 0;}
+.highlight-box{background:rgba(59,130,246,0.06);border:1px solid rgba(59,130,246,0.2);border-radius:6px;padding:1rem 1.25rem;margin:1rem 0;font-size:0.83rem;}
+.highlight-box strong{color:var(--blue);}
+.warn-box{background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.2);border-radius:6px;padding:1rem 1.25rem;margin:1rem 0;font-size:0.83rem;}
+.warn-box strong{color:var(--accent);}
+
+/* ===== CANDLE SVG SECTION ===== */
+.candle-layout{display:grid;grid-template-columns:280px 1fr;gap:2rem;margin-bottom:2rem;align-items:start;}
+.candle-svg-wrap{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.5rem;text-align:center;}
+.candle-svg-title{font-family:'Space Mono',monospace;font-size:0.62rem;color:var(--text-muted);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:1rem;}
+.candle-parts{display:flex;flex-direction:column;gap:0.75rem;}
+.candle-part{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:1rem;border-left:3px solid;}
+.candle-part.open{border-left-color:var(--accent);}
+.candle-part.close{border-left-color:var(--green);}
+.candle-part.high{border-left-color:var(--blue);}
+.candle-part.low{border-left-color:var(--red);}
+.part-label{font-family:'Space Mono',monospace;font-size:0.68rem;font-weight:700;margin-bottom:0.25rem;}
+.part-desc{font-size:0.78rem;color:var(--text-dim);}
+
+/* CANDLE COLORS */
+.color-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:2rem;}
+.color-card{border-radius:6px;padding:1.25rem;border:1px solid;}
+.color-card.green-card{background:rgba(16,185,129,0.07);border-color:rgba(16,185,129,0.25);}
+.color-card.red-card{background:rgba(239,68,68,0.07);border-color:rgba(239,68,68,0.25);}
+.color-title{font-family:'Space Mono',monospace;font-size:0.75rem;font-weight:700;margin-bottom:0.6rem;}
+.color-card.green-card .color-title{color:var(--green);}
+.color-card.red-card .color-title{color:var(--red);}
+
+/* PATTERN CARDS */
+.pattern-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-bottom:2rem;}
+.pattern-card{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:1.25rem;text-align:center;}
+.pattern-svg{margin:0 auto 0.75rem;display:block;}
+.pattern-name{font-family:'Space Mono',monospace;font-size:0.72rem;font-weight:700;margin-bottom:0.4rem;}
+.pattern-signal{font-size:0.7rem;padding:0.15rem 0.5rem;border-radius:3px;display:inline-block;margin-bottom:0.5rem;}
+.signal-bull{background:rgba(16,185,129,0.15);color:var(--green);}
+.signal-bear{background:rgba(239,68,68,0.12);color:var(--red);}
+.signal-neutral{background:rgba(245,158,11,0.12);color:var(--accent);}
+.pattern-desc{font-size:0.78rem;color:var(--text-dim);line-height:1.5;text-align:left;}
+
+/* SUPPORT / RESISTANCE */
+.sr-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:2rem;}
+.sr-card{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:1.25rem;}
+.sr-title{font-family:'Space Mono',monospace;font-size:0.72rem;font-weight:700;margin-bottom:0.75rem;}
+.sr-card.support .sr-title{color:var(--green);}
+.sr-card.resist .sr-title{color:var(--red);}
+.sr-item{display:flex;gap:0.6rem;font-size:0.8rem;color:var(--text-dim);margin-bottom:0.5rem;line-height:1.5;}
+.sr-dot{width:6px;height:6px;border-radius:50%;margin-top:8px;flex-shrink:0;}
+
+/* VOLUME */
+.vol-compare{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem;}
+.vol-card{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:1.25rem;}
+.vol-bar-wrap{display:flex;align-items:flex-end;gap:4px;height:60px;margin-bottom:0.75rem;}
+.vol-bar{border-radius:2px 2px 0 0;flex:1;}
+.vol-label{font-family:'Space Mono',monospace;font-size:0.68rem;font-weight:700;margin-bottom:0.5rem;}
+.vol-desc{font-size:0.78rem;color:var(--text-dim);line-height:1.5;}
+
+/* MA SECTION */
+.ma-concept{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:2rem;}
+.ma-card{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:1.25rem;}
+.ma-title{font-family:'Space Mono',monospace;font-size:0.72rem;font-weight:700;margin-bottom:0.75rem;}
+.ma-list{font-size:0.8rem;color:var(--text-dim);line-height:1.8;}
+.ma-list span{font-family:'Space Mono',monospace;font-size:0.7rem;padding:0.1rem 0.35rem;border-radius:3px;margin-right:0.35rem;}
+.ma-short span{background:rgba(239,68,68,0.15);color:var(--red);}
+.ma-long span{background:rgba(59,130,246,0.15);color:var(--blue);}
+
+/* MA CROSS SVG */
+.macross-wrap{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.5rem;margin-bottom:2rem;}
+.macross-title{font-family:'Space Mono',monospace;font-size:0.65rem;color:var(--text-muted);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:1rem;}
+
+/* MTF TABLE */
+.mtf-visual{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:0;margin-bottom:2rem;border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+.mtf-col{padding:1.25rem;border-right:1px solid var(--border);}
+.mtf-col:last-child{border-right:none;}
+.mtf-tf{font-family:'Space Mono',monospace;font-size:1rem;font-weight:700;color:var(--accent);margin-bottom:0.25rem;}
+.mtf-name{font-size:0.72rem;font-weight:600;color:var(--text);margin-bottom:0.5rem;}
+.mtf-role{font-size:0.75rem;color:var(--text-dim);line-height:1.5;margin-bottom:0.6rem;}
+.mtf-tools{font-size:0.7rem;color:var(--text-muted);}
+.mtf-arrow{text-align:center;font-size:1.2rem;color:var(--text-muted);padding:1rem 0;display:flex;align-items:center;justify-content:center;}
+.mtf-header{background:var(--surface2);padding:0.75rem 1.25rem;font-family:'Space Mono',monospace;font-size:0.62rem;color:var(--accent);letter-spacing:0.1em;text-transform:uppercase;grid-column:1/-1;border-bottom:1px solid var(--border);}
+
+/* ICHIMOKU vs MA comparison */
+.compare-table{width:100%;border-collapse:collapse;margin-bottom:2rem;font-size:0.8rem;}
+.compare-table th{background:var(--surface2);padding:0.7rem 1rem;text-align:left;font-family:'Space Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;color:var(--accent);text-transform:uppercase;border-bottom:1px solid var(--border);}
+.compare-table td{padding:0.75rem 1rem;border-bottom:1px solid rgba(30,36,48,0.5);vertical-align:top;line-height:1.5;}
+.compare-table tr:hover td{background:rgba(255,255,255,0.02);}
+.tag{display:inline-block;font-family:'Space Mono',monospace;font-size:0.6rem;padding:0.12rem 0.4rem;border-radius:3px;}
+.tag-ma{background:rgba(59,130,246,0.15);color:var(--blue);}
+.tag-ichi{background:rgba(245,158,11,0.12);color:var(--accent);}
+.tag-better{background:rgba(16,185,129,0.12);color:var(--green);}
+
+/* SCROLL TOP */
+#scrollTop{position:fixed;bottom:2rem;right:2rem;width:38px;height:38px;background:var(--surface);border:1px solid var(--border);border-radius:4px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.9rem;transition:all 0.2s;opacity:0;pointer-events:none;z-index:50;}
+#scrollTop.visible{opacity:1;pointer-events:all;}
+#scrollTop:hover{border-color:var(--blue);color:var(--blue);}
+
+footer{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center;font-family:'Space Mono',monospace;font-size:0.62rem;color:var(--text-muted);letter-spacing:0.1em;}
+
+@media(max-width:700px){
+  .candle-layout{grid-template-columns:1fr;}
+  .color-grid{grid-template-columns:1fr;}
+  .sr-grid{grid-template-columns:1fr;}
+  .ma-concept{grid-template-columns:1fr;}
+  .vol-compare{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-label">DSmart Trading Guide // Vol.3 — Nền Tảng</div>
+  <h1>Kiến Thức <span>Cơ Bản</span><br>Cho Người Mới</h1>
+  <p>Nến Nhật · Volume · Hỗ trợ/Kháng cự · Moving Average · Đa khung thời gian · Mối liên hệ với Ichimoku</p>
+  <div>
+    <a href="ichimoku_guide.html" class="back-btn">← Ichimoku Guide</a>
+    <a href="tips_tricks.html" class="back-btn">← Tips & Tricks</a>
+  </div>
+</div>
+
+<nav>
+  <div class="nav-logo">BASICS//GUIDE</div>
+  <a href="#candles">Nến Nhật</a>
+  <a href="#patterns">Mẫu Nến</a>
+  <a href="#volume">Volume</a>
+  <a href="#sr">Hỗ Trợ/Kháng Cự</a>
+  <a href="#ma">Moving Average</a>
+  <a href="#macross">Giao Cắt MA</a>
+  <a href="#mtf">Đa Khung TG</a>
+  <a href="#connection">MA ↔ Ichimoku</a>
+</nav>
+
+<main>
+
+<!-- ① NẾN NHẬT -->
+<section id="candles">
+  <div class="section-label">Chủ Đề 1 / 5</div>
+  <h2>Cấu tạo Nến Nhật & Hành vi giá</h2>
+  <p class="section-desc">Nến Nhật (Japanese Candlestick) là ngôn ngữ của thị trường — mỗi cây nến kể câu chuyện về cuộc chiến giữa phe mua và phe bán trong một phiên giao dịch.</p>
+
+  <div class="candle-layout">
+    <!-- SVG nến minh họa -->
+    <div class="candle-svg-wrap">
+      <div class="candle-svg-title">// Giải phẫu một cây nến</div>
+      <svg width="220" height="300" viewBox="0 0 220 300" xmlns="http://www.w3.org/2000/svg">
+        <!-- Nến XANH (tăng) -->
+        <g transform="translate(30,0)">
+          <!-- Râu trên -->
+          <line x1="40" y1="20" x2="40" y2="70" stroke="#10b981" stroke-width="2"/>
+          <!-- Thân nến xanh -->
+          <rect x="20" y="70" width="40" height="120" fill="rgba(16,185,129,0.3)" stroke="#10b981" stroke-width="1.5" rx="2"/>
+          <!-- Râu dưới -->
+          <line x1="40" y1="190" x2="40" y2="240" stroke="#10b981" stroke-width="2"/>
+          <!-- Labels -->
+          <text x="70" y="25" fill="#3b82f6" font-size="9" font-family="monospace">HIGH (Cao nhất)</text>
+          <line x1="41" y1="20" x2="68" y2="20" stroke="#374151" stroke-width="0.5" stroke-dasharray="3,2"/>
+          <text x="70" y="80" fill="#10b981" font-size="9" font-family="monospace">CLOSE (Đóng cửa)</text>
+          <line x1="41" y1="70" x2="68" y2="75" stroke="#374151" stroke-width="0.5" stroke-dasharray="3,2"/>
+          <text x="70" y="200" fill="#f59e0b" font-size="9" font-family="monospace">OPEN (Mở cửa)</text>
+          <line x1="41" y1="190" x2="68" y2="196" stroke="#374151" stroke-width="0.5" stroke-dasharray="3,2"/>
+          <text x="70" y="245" fill="#ef4444" font-size="9" font-family="monospace">LOW (Thấp nhất)</text>
+          <line x1="41" y1="240" x2="68" y2="241" stroke="#374151" stroke-width="0.5" stroke-dasharray="3,2"/>
+          <!-- Thân label -->
+          <text x="-18" y="128" fill="#10b981" font-size="8" font-family="monospace" transform="rotate(-90,-18,128)">THÂN NẾN</text>
+          <text x="-5" y="35" fill="#6b7280" font-size="8" font-family="monospace" transform="rotate(-90,-5,35)">RÂU</text>
+          <text x="-5" y="225" fill="#6b7280" font-size="8" font-family="monospace" transform="rotate(-90,-5,225)">RÂU</text>
+          <!-- NẾN ĐỎ bên cạnh -->
+          <rect x="100" y="100" width="40" height="100" fill="rgba(239,68,68,0.25)" stroke="#ef4444" stroke-width="1.5" rx="2"/>
+          <line x1="120" y1="40" x2="120" y2="100" stroke="#ef4444" stroke-width="2"/>
+          <line x1="120" y1="200" x2="120" y2="250" stroke="#ef4444" stroke-width="2"/>
+          <text x="145" y="105" fill="#f59e0b" font-size="9" font-family="monospace">OPEN</text>
+          <text x="145" y="205" fill="#10b981" font-size="9" font-family="monospace">CLOSE</text>
+          <!-- Ghi chú -->
+          <text x="15" y="275" fill="#10b981" font-size="9" font-family="monospace">NẾN XANH ↑</text>
+          <text x="95" y="275" fill="#ef4444" font-size="9" font-family="monospace">NẾN ĐỎ ↓</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="candle-parts">
+      <div class="candle-part open">
+        <div class="part-label" style="color:var(--accent)">① GIÁ MỞ CỬA (Open)</div>
+        <div class="part-desc">Mức giá đầu tiên được giao dịch khi phiên bắt đầu. Là điểm xuất phát của cuộc chiến mua-bán trong phiên đó.</div>
+      </div>
+      <div class="candle-part close">
+        <div class="part-label" style="color:var(--green)">② GIÁ ĐÓNG CỬA (Close)</div>
+        <div class="part-desc">Mức giá cuối cùng khi phiên kết thúc. Đây là giá <strong>quan trọng nhất</strong> — quyết định màu nến (xanh/đỏ) và sức mạnh xu hướng. MA thông thường tính từ giá đóng cửa.</div>
+      </div>
+      <div class="candle-part high">
+        <div class="part-label" style="color:var(--blue)">③ GIÁ CAO NHẤT (High)</div>
+        <div class="part-desc">Mức giá cao nhất đạt được trong phiên — điểm phe mua đẩy giá lên xa nhất. Khoảng từ thân nến lên High tạo ra <strong>râu trên</strong>. Râu trên dài = phe bán phản công mạnh từ vùng đó.</div>
+      </div>
+      <div class="candle-part low">
+        <div class="part-label" style="color:var(--red)">④ GIÁ THẤP NHẤT (Low)</div>
+        <div class="part-desc">Mức giá thấp nhất trong phiên — điểm phe bán đẩy giá xuống sâu nhất. Tạo ra <strong>râu dưới</strong>. Râu dưới dài = phe mua phản công mạnh, không cho giá giảm tiếp.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Màu nến -->
+  <div class="color-grid">
+    <div class="color-card green-card">
+      <div class="color-title">🟢 NẾN XANH — Tăng (Bullish)</div>
+      <div style="font-size:0.82rem; line-height:1.7; color:var(--text-dim);">
+        Giá đóng cửa <strong style="color:var(--text);">cao hơn</strong> giá mở cửa → phe mua thắng phiên đó.<br>
+        Thân nến càng dài → sức mua càng mạnh, phe mua áp đảo hoàn toàn.<br>
+        <span style="color:var(--green);">Tín hiệu:</span> Xác nhận để tìm điểm vào lệnh MUA (đặc biệt khi kết hợp với Ichimoku).
+      </div>
+    </div>
+    <div class="color-card red-card">
+      <div class="color-title">🔴 NẾN ĐỎ — Giảm (Bearish)</div>
+      <div style="font-size:0.82rem; line-height:1.7; color:var(--text-dim);">
+        Giá đóng cửa <strong style="color:var(--text);">thấp hơn</strong> giá mở cửa → phe bán thắng phiên đó.<br>
+        Thân nến đỏ càng dài → sức bán càng mạnh, phe bán hoàn toàn kiểm soát.<br>
+        <span style="color:var(--red);">Tín hiệu:</span> Xác nhận để tìm điểm vào lệnh BÁN.
+      </div>
+    </div>
+  </div>
+
+  <div class="highlight-box">
+    <strong>💡 Bí quyết đọc nến:</strong> Đừng xem từng cây nến riêng lẻ — hãy xem <strong>cụm 2-3 nến liền nhau</strong>. Câu chuyện thực sự nằm ở sự kết hợp giữa các nến, không phải từng cây đơn độc.
+  </div>
+</section>
+
+<!-- ② MẪU NẾN -->
+<section id="patterns">
+  <div class="section-label">Chủ Đề 1 (tiếp)</div>
+  <h2>Các mẫu nến đảo chiều quan trọng</h2>
+  <p class="section-desc">Đây là những "tín hiệu" mà thị trường phát ra khi phe mạnh đang chuyển giao quyền kiểm soát. Xuất hiện tại vùng hỗ trợ/kháng cự quan trọng = tín hiệu mạnh nhất.</p>
+
+  <div class="pattern-grid">
+    <!-- PINBAR -->
+    <div class="pattern-card">
+      <svg class="pattern-svg" width="60" height="90" viewBox="0 0 60 90">
+        <line x1="30" y1="5" x2="30" y2="20" stroke="#10b981" stroke-width="2"/>
+        <rect x="20" y="20" width="20" height="12" fill="rgba(16,185,129,0.3)" stroke="#10b981" stroke-width="1.5" rx="1"/>
+        <line x1="30" y1="32" x2="30" y2="80" stroke="#10b981" stroke-width="2"/>
+        <text x="30" y="88" fill="#6b7280" font-size="8" text-anchor="middle" font-family="monospace">Bullish</text>
+      </svg>
+      <div class="pattern-name" style="color:var(--green)">PINBAR (Nến Rút Chân)</div>
+      <div class="pattern-signal signal-bull">↑ Đảo chiều tăng</div>
+      <div class="pattern-desc">Râu dưới cực dài, thân nến nhỏ nằm phía trên. Ý nghĩa: phe bán đẩy giá xuống sâu nhưng phe mua phản công mạnh đẩy giá lên lại. Xuất hiện tại vùng hỗ trợ = mua mạnh.</div>
+    </div>
+
+    <!-- PINBAR ĐỎ -->
+    <div class="pattern-card">
+      <svg class="pattern-svg" width="60" height="90" viewBox="0 0 60 90">
+        <line x1="30" y1="10" x2="30" y2="58" stroke="#ef4444" stroke-width="2"/>
+        <rect x="20" y="58" width="20" height="12" fill="rgba(239,68,68,0.25)" stroke="#ef4444" stroke-width="1.5" rx="1"/>
+        <line x1="30" y1="70" x2="30" y2="82" stroke="#ef4444" stroke-width="2"/>
+        <text x="30" y="88" fill="#6b7280" font-size="8" text-anchor="middle" font-family="monospace">Bearish</text>
+      </svg>
+      <div class="pattern-name" style="color:var(--red)">PINBAR ĐỔI NGƯỢC</div>
+      <div class="pattern-signal signal-bear">↓ Đảo chiều giảm</div>
+      <div class="pattern-desc">Râu trên cực dài, thân nến nhỏ nằm phía dưới. Phe mua đẩy giá lên cao nhưng phe bán phản công dữ dội. Xuất hiện tại vùng kháng cự = bán mạnh.</div>
+    </div>
+
+    <!-- ENGULFING TĂNG -->
+    <div class="pattern-card">
+      <svg class="pattern-svg" width="60" height="90" viewBox="0 0 60 90">
+        <rect x="25" y="20" width="16" height="35" fill="rgba(239,68,68,0.25)" stroke="#ef4444" stroke-width="1.5" rx="1"/>
+        <rect x="14" y="10" width="24" height="65" fill="rgba(16,185,129,0.3)" stroke="#10b981" stroke-width="1.5" rx="1"/>
+        <text x="30" y="88" fill="#6b7280" font-size="8" text-anchor="middle" font-family="monospace">Bullish</text>
+      </svg>
+      <div class="pattern-name" style="color:var(--green)">BULLISH ENGULFING</div>
+      <div class="pattern-signal signal-bull">↑ Đảo chiều tăng mạnh</div>
+      <div class="pattern-desc">Nến xanh to bao phủ hoàn toàn thân nến đỏ trước đó. Phe mua đã áp đảo hoàn toàn phe bán. Xuất hiện ở đáy = tín hiệu mua rất uy tín.</div>
+    </div>
+
+    <!-- ENGULFING GIẢM -->
+    <div class="pattern-card">
+      <svg class="pattern-svg" width="60" height="90" viewBox="0 0 60 90">
+        <rect x="25" y="35" width="16" height="35" fill="rgba(16,185,129,0.3)" stroke="#10b981" stroke-width="1.5" rx="1"/>
+        <rect x="14" y="15" width="24" height="65" fill="rgba(239,68,68,0.25)" stroke="#ef4444" stroke-width="1.5" rx="1"/>
+        <text x="30" y="88" fill="#6b7280" font-size="8" text-anchor="middle" font-family="monospace">Bearish</text>
+      </svg>
+      <div class="pattern-name" style="color:var(--red)">BEARISH ENGULFING</div>
+      <div class="pattern-signal signal-bear">↓ Đảo chiều giảm mạnh</div>
+      <div class="pattern-desc">Nến đỏ to bao phủ hoàn toàn thân nến xanh trước. Phe bán áp đảo hoàn toàn phe mua. Xuất hiện ở đỉnh = tín hiệu bán rất uy tín.</div>
+    </div>
+
+    <!-- DOJI -->
+    <div class="pattern-card">
+      <svg class="pattern-svg" width="60" height="90" viewBox="0 0 60 90">
+        <line x1="30" y1="10" x2="30" y2="43" stroke="#f59e0b" stroke-width="2"/>
+        <rect x="14" y="43" width="32" height="3" fill="none" stroke="#f59e0b" stroke-width="2" rx="1"/>
+        <line x1="30" y1="46" x2="30" y2="80" stroke="#f59e0b" stroke-width="2"/>
+        <text x="30" y="88" fill="#6b7280" font-size="8" text-anchor="middle" font-family="monospace">Doji</text>
+      </svg>
+      <div class="pattern-name" style="color:var(--accent)">DOJI (Nến Thập Giá)</div>
+      <div class="pattern-signal signal-neutral">⚡ Cảnh báo đảo chiều</div>
+      <div class="pattern-desc">Giá mở và đóng gần bằng nhau — thân nến gần như không có. Không phe nào thắng → thị trường đang giằng co, lưỡng lự. Cần nến tiếp theo xác nhận.</div>
+    </div>
+
+    <!-- MORNING STAR -->
+    <div class="pattern-card">
+      <svg class="pattern-svg" width="60" height="90" viewBox="0 0 60 90">
+        <rect x="8" y="10" width="16" height="30" fill="rgba(239,68,68,0.25)" stroke="#ef4444" stroke-width="1.5" rx="1"/>
+        <rect x="26" y="42" width="10" height="8" fill="rgba(245,158,11,0.3)" stroke="#f59e0b" stroke-width="1.5" rx="1"/>
+        <line x1="31" y1="39" x2="31" y2="42" stroke="#f59e0b" stroke-width="1.5"/>
+        <line x1="31" y1="50" x2="31" y2="53" stroke="#f59e0b" stroke-width="1.5"/>
+        <rect x="38" y="25" width="16" height="30" fill="rgba(16,185,129,0.3)" stroke="#10b981" stroke-width="1.5" rx="1"/>
+        <text x="30" y="88" fill="#6b7280" font-size="8" text-anchor="middle" font-family="monospace">3 nến</text>
+      </svg>
+      <div class="pattern-name" style="color:var(--green)">MORNING STAR (Sao Mai)</div>
+      <div class="pattern-signal signal-bull">↑ Đảo chiều tăng</div>
+      <div class="pattern-desc">3 nến: đỏ dài → Doji nhỏ → xanh dài. Xuất hiện ở đáy sau đợt giảm. Sao Mai = bình minh sắp đến, xu hướng tăng sắp bắt đầu.</div>
+    </div>
+
+    <!-- EVENING STAR -->
+    <div class="pattern-card">
+      <svg class="pattern-svg" width="60" height="90" viewBox="0 0 60 90">
+        <rect x="8" y="30" width="16" height="30" fill="rgba(16,185,129,0.3)" stroke="#10b981" stroke-width="1.5" rx="1"/>
+        <rect x="26" y="18" width="10" height="8" fill="rgba(245,158,11,0.3)" stroke="#f59e0b" stroke-width="1.5" rx="1"/>
+        <line x1="31" y1="15" x2="31" y2="18" stroke="#f59e0b" stroke-width="1.5"/>
+        <line x1="31" y1="26" x2="31" y2="29" stroke="#f59e0b" stroke-width="1.5"/>
+        <rect x="38" y="20" width="16" height="40" fill="rgba(239,68,68,0.25)" stroke="#ef4444" stroke-width="1.5" rx="1"/>
+        <text x="30" y="88" fill="#6b7280" font-size="8" text-anchor="middle" font-family="monospace">3 nến</text>
+      </svg>
+      <div class="pattern-name" style="color:var(--red)">EVENING STAR (Sao Hôm)</div>
+      <div class="pattern-signal signal-bear">↓ Đảo chiều giảm</div>
+      <div class="pattern-desc">3 nến: xanh dài → Doji nhỏ → đỏ dài. Xuất hiện ở đỉnh sau đợt tăng. Sao Hôm = màn đêm sắp xuống, xu hướng giảm sắp bắt đầu.</div>
+    </div>
+
+    <!-- MARUBOZU -->
+    <div class="pattern-card">
+      <svg class="pattern-svg" width="60" height="90" viewBox="0 0 60 90">
+        <rect x="16" y="10" width="28" height="70" fill="rgba(16,185,129,0.3)" stroke="#10b981" stroke-width="1.5" rx="1"/>
+        <text x="30" y="88" fill="#6b7280" font-size="8" text-anchor="middle" font-family="monospace">Marubozu</text>
+      </svg>
+      <div class="pattern-name" style="color:var(--green)">MARUBOZU (Nến Đầu Trọc)</div>
+      <div class="pattern-signal signal-bull">💪 Xu hướng cực mạnh</div>
+      <div class="pattern-desc">Thân nến dài, không có râu (hoặc râu rất ngắn). Thị trường đồng thuận hoàn toàn một chiều từ đầu đến cuối phiên. Thường xuất hiện khi breakout mạnh kèm volume lớn.</div>
+    </div>
+  </div>
+
+  <div class="warn-box">
+    <strong>⚡ Nguyên tắc vàng:</strong> Mẫu nến chỉ có giá trị cao khi xuất hiện tại <strong>vùng hỗ trợ/kháng cự quan trọng</strong> (đường Kijun, cạnh mây Kumo, đỉnh/đáy cũ) kèm theo <strong>volume đột biến</strong>. Mẫu nến ở giữa không khí = tín hiệu yếu.
+  </div>
+</section>
+
+<!-- ③ VOLUME -->
+<section id="volume">
+  <div class="section-label">Chủ Đề 2 / 5</div>
+  <h2>Volume — Nhiên liệu của thị trường</h2>
+  <p class="section-desc">Volume (khối lượng giao dịch) là số lượng cổ phiếu/hợp đồng được mua bán trong một phiên. Nó trả lời câu hỏi: <em>"Có bao nhiêu người thực sự tin vào chuyển động giá này?"</em></p>
+
+  <div class="vol-compare">
+    <div class="vol-card">
+      <div class="vol-label" style="color:var(--green)">📊 Volume CAO</div>
+      <div class="vol-bar-wrap">
+        <div class="vol-bar" style="height:25%;background:rgba(16,185,129,0.3);border:1px solid rgba(16,185,129,0.4);"></div>
+        <div class="vol-bar" style="height:40%;background:rgba(16,185,129,0.3);border:1px solid rgba(16,185,129,0.4);"></div>
+        <div class="vol-bar" style="height:30%;background:rgba(16,185,129,0.3);border:1px solid rgba(16,185,129,0.4);"></div>
+        <div class="vol-bar" style="height:90%;background:rgba(16,185,129,0.6);border:1px solid var(--green);"></div>
+        <div class="vol-bar" style="height:35%;background:rgba(16,185,129,0.3);border:1px solid rgba(16,185,129,0.4);"></div>
+      </div>
+      <div class="vol-desc">Dòng tiền lớn (<strong>cá mập</strong>) đang tham gia mạnh mẽ. <br>
+        • Volume cao + giá tăng = xu hướng tăng <strong>bền vững</strong><br>
+        • Volume cao + giá không tăng được = <strong>cảnh báo đảo chiều</strong> (cá mập đang xả)<br>
+        • Volume cao tại breakout = phá vỡ <strong>thật</strong>
+      </div>
+    </div>
+    <div class="vol-card">
+      <div class="vol-label" style="color:var(--text-muted)">📊 Volume THẤP</div>
+      <div class="vol-bar-wrap">
+        <div class="vol-bar" style="height:25%;background:rgba(107,114,128,0.2);border:1px solid rgba(107,114,128,0.3);"></div>
+        <div class="vol-bar" style="height:15%;background:rgba(107,114,128,0.2);border:1px solid rgba(107,114,128,0.3);"></div>
+        <div class="vol-bar" style="height:20%;background:rgba(107,114,128,0.2);border:1px solid rgba(107,114,128,0.3);"></div>
+        <div class="vol-bar" style="height:18%;background:rgba(107,114,128,0.2);border:1px solid rgba(107,114,128,0.3);"></div>
+        <div class="vol-bar" style="height:22%;background:rgba(107,114,128,0.2);border:1px solid rgba(107,114,128,0.3);"></div>
+      </div>
+      <div class="vol-desc">Thị trường thiếu đồng thuận, ít người tham gia.<br>
+        • Volume thấp + giá phá cản = breakout <strong>giả (fakeout)</strong><br>
+        • Volume thấp khi retest = xác nhận breakout <strong>thật</strong><br>
+        • Volume thấp kéo dài = thị trường đang <strong>tích lũy</strong>
+      </div>
+    </div>
+  </div>
+
+  <div class="highlight-box">
+    <strong>🔑 Nguyên tắc cốt lõi:</strong> Không bao giờ tin vào một tín hiệu giá nếu không có Volume xác nhận. <strong>Giá là bề mặt, Volume mới là sự thật bên dưới.</strong>
+  </div>
+</section>
+
+<!-- HỖ TRỢ / KHÁNG CỰ -->
+<section id="sr">
+  <div class="section-label">Chủ Đề 2 (tiếp)</div>
+  <h2>Hỗ Trợ & Kháng Cự — Chiến trường của giá</h2>
+  <p class="section-desc">Đây là các vùng giá nơi cuộc chiến mua-bán diễn ra gay gắt nhất — nơi xu hướng bị cản lại hoặc bị phá vỡ.</p>
+
+  <div class="sr-grid">
+    <div class="sr-card support">
+      <div class="sr-title">🟢 HỖ TRỢ (Support)</div>
+      <div class="sr-item"><div class="sr-dot" style="background:var(--green);margin-top:8px;"></div><div>Vùng giá <strong>phía dưới</strong> — nơi lực mua (cầu) đủ lớn để đỡ giá, ngăn giá giảm thêm</div></div>
+      <div class="sr-item"><div class="sr-dot" style="background:var(--green);margin-top:8px;"></div><div>Vùng test 2-3 lần mà giá không thể phá xuống = <strong>hỗ trợ cứng</strong></div></div>
+      <div class="sr-item"><div class="sr-dot" style="background:var(--green);margin-top:8px;"></div><div>Giá về hỗ trợ + nến đảo chiều + volume lớn = <strong>điểm mua tiềm năng</strong></div></div>
+      <div class="sr-item"><div class="sr-dot" style="background:var(--accent);margin-top:8px;"></div><div>Trong Ichimoku: Kijun-Sen, cạnh dưới mây Kumo, đường Senkou Span B đều là các vùng hỗ trợ tự nhiên</div></div>
+    </div>
+    <div class="sr-card resist">
+      <div class="sr-title">🔴 KHÁNG CỰ (Resistance)</div>
+      <div class="sr-item"><div class="sr-dot" style="background:var(--red);margin-top:8px;"></div><div>Vùng giá <strong>phía trên</strong> — nơi lực bán (cung) đủ mạnh để cản giá, đẩy giá đi xuống</div></div>
+      <div class="sr-item"><div class="sr-dot" style="background:var(--red);margin-top:8px;"></div><div>Giá chạm đỉnh cũ nhiều lần không vượt qua được = <strong>kháng cự cứng</strong></div></div>
+      <div class="sr-item"><div class="sr-dot" style="background:var(--red);margin-top:8px;"></div><div>Giá lên kháng cự + nến đảo chiều + volume lớn = <strong>điểm bán tiềm năng</strong></div></div>
+      <div class="sr-item"><div class="sr-dot" style="background:var(--accent);margin-top:8px;"></div><div>Trong Ichimoku: cạnh trên mây Kumo đỏ, Kijun phẳng trong downtrend đều là kháng cự mạnh</div></div>
+    </div>
+  </div>
+
+  <div class="warn-box">
+    <strong>🔄 Nguyên tắc đổi vai (Role Reversal):</strong> Khi kháng cự bị phá vỡ đi lên → nó trở thành hỗ trợ mới. Khi hỗ trợ bị thủng xuống → nó trở thành kháng cự mới. Đây là cơ sở của chiến lược <strong>mua tại retest</strong>.
+  </div>
+</section>
+
+<!-- ④ MOVING AVERAGE -->
+<section id="ma">
+  <div class="section-label">Chủ Đề 3 / 5</div>
+  <h2>Moving Average (MA) — Đường trung bình động</h2>
+  <p class="section-desc">MA là đường làm mượt chuyển động giá theo thời gian — giúp bạn thấy rõ xu hướng mà không bị "rối" bởi biến động ngắn hạn hàng ngày.</p>
+
+  <div class="ma-concept">
+    <div class="ma-card">
+      <div class="ma-title" style="color:var(--red)">⚡ MA NGẮN HẠN — Phản ứng nhanh</div>
+      <div class="ma-list ma-short" style="line-height:2;">
+        <div><span>MA9</span> ≈ 9 phiên — ~2 tuần giao dịch</div>
+        <div><span>MA21</span> ≈ 21 phiên — ~1 tháng giao dịch</div>
+        <div><span>MA50</span> ≈ 50 phiên — ~1 quý</div>
+      </div>
+      <div class="divider"></div>
+      <div style="font-size:0.8rem; color:var(--text-dim); margin-top:0.5rem; line-height:1.6;">
+        Bám sát giá, phản ứng nhanh với biến động.<br>
+        Dùng để: xác nhận xu hướng ngắn hạn, tìm điểm vào lệnh.<br>
+        Nhược điểm: nhiều tín hiệu giả khi thị trường sideway.
+      </div>
+    </div>
+    <div class="ma-card">
+      <div class="ma-title" style="color:var(--blue)">🏔 MA DÀI HẠN — Xương sống xu hướng</div>
+      <div class="ma-list ma-long" style="line-height:2;">
+        <div><span>MA100</span> ≈ 100 phiên — ~5 tháng</div>
+        <div><span>MA200</span> ≈ 200 phiên — ~1 năm làm việc</div>
+        <div><span>MA234</span> IchiSmart — ~1 năm đầy đủ</div>
+      </div>
+      <div class="divider"></div>
+      <div style="font-size:0.8rem; color:var(--text-dim); margin-top:0.5rem; line-height:1.6;">
+        Phản ứng chậm, ít bị nhiễu, định hướng dài hạn.<br>
+        Dùng để: xác định xu hướng chính, tìm vùng hỗ trợ/kháng cự mạnh.<br>
+        Ưu điểm: ít tín hiệu giả, đáng tin cậy hơn trong dài hạn.
+      </div>
+    </div>
+  </div>
+
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.5rem;margin-bottom:1.5rem;">
+    <div style="font-family:'Space Mono',monospace;font-size:0.65rem;color:var(--text-muted);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:1rem;">// Tại sao cần biết MA dài hạn?</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;font-size:0.82rem;">
+      <div style="padding:1rem;background:var(--surface2);border-radius:6px;border:1px solid var(--border);">
+        <div style="font-weight:600;margin-bottom:0.4rem;color:var(--accent);">🧭 Kim chỉ nam</div>
+        <div style="color:var(--text-dim);">Giá trên MA200 = thị trường tăng dài hạn → ưu tiên mua. Giá dưới MA200 = thị trường giảm dài hạn → ưu tiên bán hoặc đứng ngoài.</div>
+      </div>
+      <div style="padding:1rem;background:var(--surface2);border-radius:6px;border:1px solid var(--border);">
+        <div style="font-weight:600;margin-bottom:0.4rem;color:var(--green);">🧲 Nam châm hút giá</div>
+        <div style="color:var(--text-dim);">Khi giá đi quá xa MA dài hạn, nó sẽ bị "hút" trở về. Đây là cơ sở để nhận biết thị trường đang "overbought" hay "oversold".</div>
+      </div>
+      <div style="padding:1rem;background:var(--surface2);border-radius:6px;border:1px solid var(--border);">
+        <div style="font-weight:600;margin-bottom:0.4rem;color:var(--blue);">🏗 Vùng cản cứng</div>
+        <div style="color:var(--text-dim);">MA50, MA100, MA200 là các vùng hỗ trợ/kháng cự được tôn trọng bởi toàn bộ thị trường — từ trader nhỏ lẻ đến quỹ đầu tư lớn.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ⑤ MA CROSS -->
+<section id="macross">
+  <div class="section-label">Chủ Đề 4 / 5</div>
+  <h2>Giao cắt MA — Tín hiệu đổi chiều xu hướng</h2>
+  <p class="section-desc">Khi đường MA ngắn hạn cắt qua đường MA dài hạn — đây là tín hiệu xu hướng đang thay đổi. Hiểu điều này giúp bạn hiểu TK Cross trong Ichimoku.</p>
+
+  <div class="macross-wrap">
+    <div class="macross-title">// Minh họa MA Cross — Giao cắt vàng và giao cắt chết</div>
+    <svg width="100%" height="200" viewBox="0 0 700 200" xmlns="http://www.w3.org/2000/svg" style="max-width:700px;display:block;margin:0 auto;">
+      <!-- BG -->
+      <rect width="700" height="200" fill="transparent"/>
+      <!-- Grid lines -->
+      <line x1="0" y1="50" x2="700" y2="50" stroke="#1e2430" stroke-width="0.5"/>
+      <line x1="0" y1="100" x2="700" y2="100" stroke="#1e2430" stroke-width="0.5"/>
+      <line x1="0" y1="150" x2="700" y2="150" stroke="#1e2430" stroke-width="0.5"/>
+
+      <!-- MA DÀI HẠN (xanh lam, ổn định) -->
+      <polyline points="20,160 100,155 200,145 300,130 400,120 500,125 600,130 690,135" fill="none" stroke="#3b82f6" stroke-width="2.5" opacity="0.9"/>
+
+      <!-- MA NGẮN HẠN (đỏ, linh hoạt) -->
+      <polyline points="20,170 80,165 150,155 220,140 280,115 330,90 370,75 420,80 480,95 540,115 600,125 650,128 690,130" fill="none" stroke="#ef4444" stroke-width="2" opacity="0.9"/>
+
+      <!-- GOLDEN CROSS marker -->
+      <circle cx="310" cy="110" r="8" fill="none" stroke="#10b981" stroke-width="2"/>
+      <circle cx="310" cy="110" r="3" fill="#10b981"/>
+      <line x1="310" y1="10" x2="310" y2="102" stroke="#10b981" stroke-width="0.8" stroke-dasharray="4,3"/>
+      <text x="315" y="18" fill="#10b981" font-size="10" font-family="monospace">Golden Cross</text>
+      <text x="315" y="30" fill="#10b981" font-size="9" font-family="monospace">MA ngắn cắt lên</text>
+      <text x="315" y="42" fill="#10b981" font-size="9" font-family="monospace">→ Tín hiệu MUA</text>
+
+      <!-- DEATH CROSS marker (phía bên trái, MA ngắn cắt xuống) -->
+      <circle cx="520" cy="117" r="8" fill="none" stroke="#ef4444" stroke-width="2"/>
+      <circle cx="520" cy="117" r="3" fill="#ef4444"/>
+      <line x1="520" y1="125" x2="520" y2="190" stroke="#ef4444" stroke-width="0.8" stroke-dasharray="4,3"/>
+      <text x="430" y="148" fill="#ef4444" font-size="10" font-family="monospace">Death Cross</text>
+      <text x="430" y="160" fill="#ef4444" font-size="9" font-family="monospace">MA ngắn cắt xuống</text>
+      <text x="430" y="172" fill="#ef4444" font-size="9" font-family="monospace">→ Tín hiệu BÁN</text>
+
+      <!-- Labels -->
+      <text x="695" y="133" fill="#3b82f6" font-size="9" font-family="monospace" text-anchor="end">MA Dài hạn</text>
+      <text x="695" y="128" fill="#ef4444" font-size="9" font-family="monospace" text-anchor="end" dy="10">MA Ngắn hạn</text>
+    </svg>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem;">
+    <div style="background:rgba(16,185,129,0.07);border:1px solid rgba(16,185,129,0.25);border-radius:6px;padding:1.25rem;">
+      <div style="font-family:'Space Mono',monospace;font-size:0.72rem;font-weight:700;color:var(--green);margin-bottom:0.75rem;">☀️ GOLDEN CROSS — Tín hiệu Mua</div>
+      <div style="font-size:0.82rem;color:var(--text-dim);line-height:1.7;">
+        MA ngắn hạn cắt <strong style="color:var(--text);">lên trên</strong> MA dài hạn<br>
+        → Động lượng ngắn hạn vượt qua dài hạn<br>
+        → Xu hướng tăng đang được xác lập<br>
+        → <span style="color:var(--green);">Tìm điểm mua theo xu hướng</span>
+      </div>
+    </div>
+    <div style="background:rgba(239,68,68,0.07);border:1px solid rgba(239,68,68,0.25);border-radius:6px;padding:1.25rem;">
+      <div style="font-family:'Space Mono',monospace;font-size:0.72rem;font-weight:700;color:var(--red);margin-bottom:0.75rem;">💀 DEATH CROSS — Tín hiệu Bán</div>
+      <div style="font-size:0.82rem;color:var(--text-dim);line-height:1.7;">
+        MA ngắn hạn cắt <strong style="color:var(--text);">xuống dưới</strong> MA dài hạn<br>
+        → Động lượng ngắn hạn yếu hơn dài hạn<br>
+        → Xu hướng giảm đang được xác lập<br>
+        → <span style="color:var(--red);">Tìm điểm bán hoặc đứng ngoài</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ⑥ ĐA KHUNG THỜI GIAN -->
+<section id="mtf">
+  <div class="section-label">Chủ Đề 5 / 5</div>
+  <h2>Đa Khung Thời Gian — Nhìn từ trên xuống</h2>
+  <p class="section-desc">Mỗi khung thời gian kể một câu chuyện khác nhau về cùng một tài sản. Đọc tất cả chúng theo thứ tự từ lớn đến nhỏ — đây là cách trader chuyên nghiệp nhìn thị trường.</p>
+
+  <div class="mtf-visual">
+    <div class="mtf-header">// Phân cấp khung thời gian — Top-Down Analysis</div>
+    <div class="mtf-col" style="background:rgba(245,158,11,0.04);">
+      <div class="mtf-tf">W</div>
+      <div class="mtf-name">Khung Tuần</div>
+      <div class="mtf-role"><strong>Xác định xu hướng tổng quan.</strong> Mây Kumo tuần → phe chủ đạo của toàn thị trường.</div>
+      <div class="mtf-tools" style="color:var(--accent);">📍 Định hướng</div>
+    </div>
+    <div class="mtf-col">
+      <div class="mtf-tf">D</div>
+      <div class="mtf-name">Khung Ngày</div>
+      <div class="mtf-role"><strong>Xây dựng kịch bản.</strong> Nếu giá chạm A thì làm gì, thủng B rơi về đâu. Tìm tín hiệu TK Cross, Kumo Breakout.</div>
+      <div class="mtf-tools" style="color:var(--green);">📋 Lên kế hoạch</div>
+    </div>
+    <div class="mtf-col">
+      <div class="mtf-tf">4H</div>
+      <div class="mtf-name">Khung 4 Giờ</div>
+      <div class="mtf-role"><strong>Xác nhận tín hiệu.</strong> Kiểm tra tín hiệu từ D có đồng thuận không. Tìm điểm vào lệnh gần hơn.</div>
+      <div class="mtf-tools" style="color:var(--blue);">✅ Xác nhận</div>
+    </div>
+    <div class="mtf-col" style="border-right:none;">
+      <div class="mtf-tf">1H</div>
+      <div class="mtf-name">Khung 1 Giờ</div>
+      <div class="mtf-role"><strong>Tinh chỉnh điểm vào.</strong> Tìm nến đảo chiều, đặt SL chính xác nhất, tối ưu R:R.</div>
+      <div class="mtf-tools" style="color:var(--purple);">🎯 Bóp cò</div>
+    </div>
+  </div>
+
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.5rem;margin-bottom:1.5rem;">
+    <div style="font-family:'Space Mono',monospace;font-size:0.65rem;color:var(--text-muted);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:1rem;">// Xu hướng chính vs. Xu hướng phụ</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;font-size:0.82rem;">
+      <div>
+        <div style="font-weight:600;color:var(--accent);margin-bottom:0.4rem;">Xu hướng chính (Primary Trend)</div>
+        <div style="color:var(--text-dim);line-height:1.6;">Hướng chuyển động tổng thể ở khung lớn (W, D). Là "kim chỉ nam" bắt buộc phải tuân theo — xu hướng chính tăng thì chỉ mua, giảm thì chỉ bán.</div>
+      </div>
+      <div>
+        <div style="font-weight:600;color:var(--blue);margin-bottom:0.4rem;">Xu hướng phụ (Secondary Trend)</div>
+        <div style="color:var(--text-dim);line-height:1.6;">Các con sóng nhỏ đi ngược lại xu hướng chính (hiệu chỉnh). Trong xu hướng tăng, sẽ luôn có nhịp giảm — đây là cơ hội để mua vào với giá tốt hơn.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="warn-box">
+    <strong>⚡ Quy tắc vàng:</strong> Chỉ vào lệnh khi xu hướng khung W, D, 4H <strong>đồng thuận</strong> cùng một hướng. Nếu khung lớn mâu thuẫn với khung nhỏ → đứng ngoài chờ.
+  </div>
+</section>
+
+<!-- ⑦ KẾT NỐI MA ↔ ICHIMOKU -->
+<section id="connection">
+  <div class="section-label">Tổng Hợp</div>
+  <h2>MA Giao Cắt ↔ Ichimoku — Cùng một triết lý</h2>
+  <p class="section-desc">Ichimoku thực chất là một hệ thống MA nâng cao — hiểu MA giúp bạn hiểu sâu hơn tại sao Ichimoku hoạt động.</p>
+
+  <table class="compare-table">
+    <thead>
+      <tr>
+        <th>Khái niệm MA</th>
+        <th>Tương đương Ichimoku</th>
+        <th>Điểm khác biệt</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="tag tag-ma">MA Ngắn hạn</span><br>MA9, MA21 — phản ứng nhanh</td>
+        <td><span class="tag tag-ichi">Tenkan-Sen (9)</span><br>Đường chuyển đổi ngắn hạn</td>
+        <td>MA dùng giá đóng cửa. Tenkan dùng <strong>(High+Low)/2</strong> — phản ánh điểm cân bằng thực, ít bị nhiễu hơn.</td>
+      </tr>
+      <tr>
+        <td><span class="tag tag-ma">MA Trung hạn</span><br>MA26 — xu hướng trung hạn</td>
+        <td><span class="tag tag-ichi">Kijun-Sen (26)</span><br>Đường cơ sở trung hạn</td>
+        <td>Kijun = Fibonacci 50% của 26 phiên — tự nhiên trở thành vùng hỗ trợ/kháng cự mạnh hơn MA truyền thống.</td>
+      </tr>
+      <tr>
+        <td><span class="tag tag-ma">Golden Cross</span><br>MA ngắn cắt lên MA dài</td>
+        <td><span class="tag tag-ichi">TK Cross ↑</span><br>Tenkan cắt lên trên Kijun</td>
+        <td><span class="tag tag-better">Ichimoku mạnh hơn</span> Có thêm vị trí so với mây (trên/trong/dưới) để phân loại tín hiệu mạnh/yếu — MA Cross không có điều này.</td>
+      </tr>
+      <tr>
+        <td><span class="tag tag-ma">Death Cross</span><br>MA ngắn cắt xuống MA dài</td>
+        <td><span class="tag tag-ichi">TK Cross ↓</span><br>Tenkan cắt xuống dưới Kijun</td>
+        <td>TK Cross dưới mây đỏ = tín hiệu bán mạnh nhất. TK Cross trong mây = tín hiệu yếu. MA Cross không phân biệt được.</td>
+      </tr>
+      <tr>
+        <td><span class="tag tag-ma">MA Dài hạn</span><br>MA50, MA200 — xu hướng chính</td>
+        <td><span class="tag tag-ichi">Senkou Span B (52)</span><br>Viền mây dài hạn</td>
+        <td><span class="tag tag-better">Ichimoku mạnh hơn</span> Span B được dịch chuyển 26 phiên về tương lai → bạn thấy trước vùng cản sắp đến. MA truyền thống chỉ nhìn lại quá khứ.</td>
+      </tr>
+      <tr>
+        <td><span class="tag tag-ma">Vùng MA</span><br>Khi giá nằm giữa nhiều đường MA</td>
+        <td><span class="tag tag-ichi">Kumo (Đám Mây)</span><br>Vùng giữa Span A và Span B</td>
+        <td><span class="tag tag-better">Ichimoku mạnh hơn</span> Kumo có độ dày thay đổi → biết được cản mạnh hay yếu. Kumo màu xanh/đỏ → biết ngay xu hướng. MA không trực quan như vậy.</td>
+      </tr>
+      <tr>
+        <td><span class="tag tag-ma">IchiSmart MA65/129/234</span><br>3 đường MA đặc biệt của DSmart</td>
+        <td><span class="tag tag-ichi">Hệ thống IchiSmart</span><br>Thay thế Ichimoku cổ điển</td>
+        <td>Chu kỳ 65-129-234 tương ứng với nhịp thị trường thực tế. MA65 là ngưỡng chuyển giao xu hướng, 129 và 234 là target giá tự nhiên theo Sóng N.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="highlight-box">
+    <strong>🧠 Kết luận then chốt:</strong> Ichimoku không phải là chỉ báo thần bí — nó là <strong>hệ thống MA nâng cao</strong>, thêm 3 cải tiến quan trọng: (1) Dùng (High+Low)/2 thay vì Close → chính xác hơn; (2) Dịch chuyển về tương lai → dự báo được cản; (3) Tạo vùng mây trực quan → phân loại tín hiệu mạnh/yếu ngay lập tức.
+  </div>
+</section>
+
+</main>
+
+<footer>
+  KIẾN THỨC CƠ BẢN // DSMART TRADING GUIDE &nbsp;·&nbsp; Nguồn: NotebookLM EXNESS &nbsp;·&nbsp; Chỉ mang tính giáo dục — không phải lời khuyên đầu tư
+</footer>
+
+<button id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+<script>
+window.addEventListener('scroll',()=>{document.getElementById('scrollTop').classList.toggle('visible',window.scrollY>400);});
+</script>
+</body>
+</html>
