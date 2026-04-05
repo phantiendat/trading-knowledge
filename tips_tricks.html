@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tips & Tricks — DSmart Trading</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400&family=Space+Mono:wght@400;700&family=Be+Vietnam+Pro:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0c10;
+    --surface: #111318;
+    --surface2: #181c24;
+    --border: #1e2430;
+    --text: #e8eaf0;
+    --text-dim: #6b7280;
+    --text-muted: #374151;
+    --accent: #f59e0b;
+    --green: #10b981;
+    --red: #ef4444;
+    --blue: #3b82f6;
+    --purple: #a78bfa;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body { background:var(--bg); color:var(--text); font-family:'Be Vietnam Pro',sans-serif; font-weight:300; line-height:1.7; overflow-x:hidden; }
+
+  /* HERO */
+  .hero {
+    padding: 5rem 2rem 3rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    border-bottom: 1px solid var(--border);
+  }
+  .hero::before {
+    content:'';
+    position:absolute; inset:0;
+    background: radial-gradient(ellipse 70% 60% at 50% 0%, rgba(245,158,11,0.07) 0%, transparent 70%);
+    pointer-events:none;
+  }
+  .hero-label {
+    font-family:'Space Mono',monospace;
+    font-size:0.65rem; letter-spacing:0.2em; color:var(--accent);
+    text-transform:uppercase; margin-bottom:1rem;
+  }
+  .hero h1 {
+    font-family:'Noto Serif JP',serif;
+    font-size:clamp(2rem,6vw,3.5rem);
+    font-weight:300; line-height:1.15; margin-bottom:1rem;
+  }
+  .hero h1 span { color:var(--accent); }
+  .hero p { color:var(--text-dim); font-size:0.9rem; max-width:520px; margin:0 auto 2rem; }
+  .back-btn {
+    display:inline-flex; align-items:center; gap:0.4rem;
+    color:var(--text-dim); text-decoration:none; font-size:0.78rem;
+    border:1px solid var(--border); padding:0.5rem 1rem; border-radius:4px;
+    transition:all 0.2s;
+  }
+  .back-btn:hover { border-color:var(--accent); color:var(--accent); }
+
+  /* NAV */
+  nav {
+    position:sticky; top:0; z-index:100;
+    background:rgba(10,12,16,0.92); backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--border);
+    padding:0 2rem; display:flex; align-items:center; gap:0;
+    overflow-x:auto; scrollbar-width:none;
+  }
+  nav::-webkit-scrollbar { display:none; }
+  .nav-logo { font-family:'Space Mono',monospace; font-size:0.72rem; color:var(--accent); white-space:nowrap; padding:1rem 1.5rem 1rem 0; border-right:1px solid var(--border); margin-right:1rem; }
+  nav a { color:var(--text-dim); text-decoration:none; font-size:0.78rem; font-weight:500; padding:1rem 0.8rem; white-space:nowrap; transition:color 0.2s; border-bottom:2px solid transparent; }
+  nav a:hover { color:var(--accent); border-bottom-color:var(--accent); }
+
+  /* LAYOUT */
+  main { max-width:1100px; margin:0 auto; padding:0 1.5rem 6rem; }
+  section { padding:4rem 0 1rem; }
+  .section-label { font-family:'Space Mono',monospace; font-size:0.65rem; letter-spacing:0.2em; color:var(--accent); text-transform:uppercase; margin-bottom:0.75rem; }
+  h2 { font-family:'Noto Serif JP',serif; font-size:clamp(1.4rem,3.5vw,2rem); font-weight:300; margin-bottom:0.5rem; }
+  .section-desc { color:var(--text-dim); font-size:0.88rem; max-width:600px; margin-bottom:2.5rem; }
+
+  /* TIP CARDS */
+  .tips-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:1rem; margin-bottom:2rem; }
+  .tip-card {
+    background:var(--surface); border:1px solid var(--border); border-radius:6px;
+    padding:1.25rem; position:relative; overflow:hidden; transition:border-color 0.2s;
+  }
+  .tip-card:hover { border-color:#374151; }
+  .tip-card::before { content:''; position:absolute; left:0; top:0; bottom:0; width:3px; }
+  .tip-card.danger::before { background:var(--red); }
+  .tip-card.success::before { background:var(--green); }
+  .tip-card.warning::before { background:var(--accent); }
+  .tip-card.info::before { background:var(--blue); }
+  .tip-card.purple::before { background:var(--purple); }
+  .tip-icon { font-size:1.2rem; margin-bottom:0.5rem; display:block; }
+  .tip-title { font-size:0.85rem; font-weight:600; margin-bottom:0.5rem; }
+  .tip-desc { font-size:0.8rem; color:var(--text-dim); line-height:1.6; }
+  .tip-desc strong { color:var(--text); }
+
+  /* MISTAKE LIST */
+  .mistake-list { margin-bottom:2rem; }
+  .mistake-item {
+    background:var(--surface); border:1px solid var(--border);
+    border-left:3px solid var(--red); border-radius:0 6px 6px 0;
+    padding:1rem 1.25rem; margin-bottom:0.75rem; display:flex; gap:1rem;
+  }
+  .mistake-num { font-family:'Space Mono',monospace; font-size:0.75rem; color:var(--red); font-weight:700; min-width:1.5rem; padding-top:2px; }
+  .mistake-content .mistake-title { font-size:0.85rem; font-weight:600; margin-bottom:0.25rem; color:var(--red); }
+  .mistake-content .mistake-desc { font-size:0.8rem; color:var(--text-dim); line-height:1.5; }
+  .mistake-content .mistake-fix { font-size:0.78rem; color:var(--green); margin-top:0.4rem; }
+  .mistake-content .mistake-fix::before { content:'✓ Fix: '; font-weight:600; }
+
+  /* PSYCHOLOGY CARDS */
+  .psych-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:1rem; margin-bottom:2rem; }
+  .psych-card { background:var(--surface); border:1px solid var(--border); border-radius:6px; padding:1.25rem; }
+  .psych-header { display:flex; align-items:center; gap:0.6rem; margin-bottom:0.75rem; }
+  .psych-icon { font-size:1.3rem; }
+  .psych-name { font-family:'Space Mono',monospace; font-size:0.75rem; font-weight:700; }
+  .psych-symptom { font-size:0.78rem; color:var(--red); margin-bottom:0.5rem; padding:0.4rem 0.6rem; background:rgba(239,68,68,0.08); border-radius:4px; }
+  .psych-fix { font-size:0.78rem; color:var(--green); padding:0.4rem 0.6rem; background:rgba(16,185,129,0.08); border-radius:4px; }
+
+  /* SL/TP TABLE */
+  .sltp-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:2rem; }
+  .sltp-card { background:var(--surface); border:1px solid var(--border); border-radius:6px; padding:1.5rem; }
+  .sltp-title { font-family:'Space Mono',monospace; font-size:0.72rem; font-weight:700; margin-bottom:1rem; }
+  .sltp-card.sl .sltp-title { color:var(--red); }
+  .sltp-card.tp .sltp-title { color:var(--green); }
+  .sltp-item { display:flex; gap:0.75rem; margin-bottom:0.7rem; font-size:0.8rem; line-height:1.5; }
+  .sltp-dot { width:6px; height:6px; border-radius:50%; margin-top:7px; flex-shrink:0; }
+  .dot-red { background:var(--red); }
+  .dot-green { background:var(--green); }
+  .dot-yellow { background:var(--accent); }
+
+  /* POSITION SIZING */
+  .sizing-visual {
+    background:var(--surface); border:1px solid var(--border); border-radius:8px;
+    padding:2rem; margin-bottom:2rem;
+  }
+  .sizing-title { font-family:'Space Mono',monospace; font-size:0.72rem; color:var(--accent); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:1.5rem; }
+  .sizing-rule {
+    display:flex; gap:1.5rem; align-items:center;
+    padding:1rem; background:var(--surface2); border-radius:6px; margin-bottom:0.75rem;
+    border:1px solid var(--border);
+  }
+  .sizing-pct { font-family:'Space Mono',monospace; font-size:1.8rem; font-weight:700; min-width:4rem; text-align:center; }
+  .sizing-pct.danger { color:var(--red); }
+  .sizing-pct.caution { color:var(--accent); }
+  .sizing-pct.go { color:var(--green); }
+  .sizing-context { font-size:0.82rem; }
+  .sizing-label { font-weight:600; margin-bottom:0.2rem; }
+  .sizing-desc { font-size:0.78rem; color:var(--text-dim); }
+
+  /* VOLUME SECTION */
+  .volume-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1rem; margin-bottom:2rem; }
+  .vol-card { background:var(--surface); border:1px solid var(--border); border-radius:6px; padding:1.25rem; }
+  .vol-title { font-size:0.82rem; font-weight:600; margin-bottom:0.75rem; display:flex; align-items:center; gap:0.5rem; }
+  .vol-desc { font-size:0.8rem; color:var(--text-dim); line-height:1.6; }
+  .vol-desc strong { color:var(--text); }
+
+  /* FAKE SIGNAL */
+  .fake-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1rem; margin-bottom:2rem; }
+  .fake-card {
+    background:var(--surface); border:1px solid rgba(239,68,68,0.2);
+    border-radius:6px; padding:1.25rem;
+  }
+  .fake-title { font-size:0.82rem; font-weight:600; color:var(--red); margin-bottom:0.5rem; display:flex; gap:0.5rem; align-items:center; }
+  .fake-desc { font-size:0.8rem; color:var(--text-dim); line-height:1.6; margin-bottom:0.6rem; }
+  .fake-filter { font-size:0.78rem; color:var(--green); padding:0.4rem 0.6rem; background:rgba(16,185,129,0.08); border-radius:4px; }
+  .fake-filter::before { content:'🔍 Bộ lọc: '; font-weight:600; }
+
+  /* WYCKOFF */
+  .wyckoff-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:2rem; }
+  .wyckoff-card { background:var(--surface); border:1px solid var(--border); border-radius:6px; padding:1.25rem; }
+  .wyckoff-title { font-family:'Space Mono',monospace; font-size:0.72rem; font-weight:700; margin-bottom:0.75rem; }
+
+  /* ELLIOTT */
+  .elliott-table { width:100%; border-collapse:collapse; margin-bottom:2rem; font-size:0.8rem; }
+  .elliott-table th { background:var(--surface2); padding:0.6rem 1rem; text-align:left; font-family:'Space Mono',monospace; font-size:0.62rem; letter-spacing:0.1em; color:var(--accent); text-transform:uppercase; border-bottom:1px solid var(--border); }
+  .elliott-table td { padding:0.65rem 1rem; border-bottom:1px solid rgba(30,36,48,0.5); vertical-align:top; line-height:1.5; }
+  .elliott-table tr:hover td { background:rgba(255,255,255,0.02); }
+  .wave-badge { font-family:'Space Mono',monospace; font-size:0.72rem; font-weight:700; padding:0.15rem 0.45rem; border-radius:3px; }
+  .wave-push { background:rgba(16,185,129,0.15); color:var(--green); }
+  .wave-corr { background:rgba(239,68,68,0.12); color:var(--red); }
+
+  /* GOLDEN QUOTES */
+  .quotes-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1rem; margin-bottom:2rem; }
+  .quote-card {
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:6px; padding:1.25rem;
+    border-top:2px solid var(--accent);
+  }
+  .quote-text { font-family:'Noto Serif JP',serif; font-size:0.9rem; color:var(--text); margin-bottom:0.6rem; line-height:1.6; font-style:italic; }
+  .quote-source { font-family:'Space Mono',monospace; font-size:0.62rem; color:var(--text-muted); }
+
+  /* HIGHLIGHT BOX */
+  .highlight-box { background:rgba(245,158,11,0.06); border:1px solid rgba(245,158,11,0.2); border-radius:6px; padding:1rem 1.25rem; margin:1rem 0; font-size:0.83rem; }
+  .highlight-box strong { color:var(--accent); }
+  .danger-box { background:rgba(239,68,68,0.06); border:1px solid rgba(239,68,68,0.2); border-radius:6px; padding:1rem 1.25rem; margin:1rem 0; font-size:0.83rem; }
+  .danger-box strong { color:var(--red); }
+
+  /* SCROLL TOP */
+  #scrollTop { position:fixed; bottom:2rem; right:2rem; width:38px; height:38px; background:var(--surface); border:1px solid var(--border); border-radius:4px; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:0.9rem; transition:all 0.2s; opacity:0; pointer-events:none; z-index:50; }
+  #scrollTop.visible { opacity:1; pointer-events:all; }
+  #scrollTop:hover { border-color:var(--accent); color:var(--accent); }
+
+  /* DIVIDER */
+  .divider { height:1px; background:linear-gradient(90deg,transparent,var(--border),transparent); margin:0.75rem 0; }
+
+  footer { border-top:1px solid var(--border); padding:2rem 1.5rem; text-align:center; font-family:'Space Mono',monospace; font-size:0.62rem; color:var(--text-muted); letter-spacing:0.1em; }
+
+  @media(max-width:640px) {
+    .sltp-grid { grid-template-columns:1fr; }
+    .wyckoff-grid { grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-label">DSmart Trading Guide // Vol.2</div>
+  <h1>Tips & <span>Tricks</span><br>Thực Chiến</h1>
+  <p>Tổng hợp những bí kíp, lỗi cần tránh và nguyên tắc thực chiến từ hệ thống DSmart — khai thác từ NotebookLM EXNESS</p>
+  <a href="ichimoku_guide.html" class="back-btn">← Quay lại Ichimoku Guide</a>
+</div>
+
+<nav>
+  <div class="nav-logo">TIPS//GUIDE</div>
+  <a href="#mistakes">Lỗi Phổ Biến</a>
+  <a href="#fakesignal">Tín Hiệu Giả</a>
+  <a href="#sltp">SL/TP</a>
+  <a href="#sizing">Quản Lý Vốn</a>
+  <a href="#volume">Volume</a>
+  <a href="#psychology">Tâm Lý</a>
+  <a href="#elliott">Elliott/Wyckoff</a>
+  <a href="#quotes">Châm Ngôn</a>
+</nav>
+
+<main>
+
+  <!-- MISTAKES -->
+  <section id="mistakes">
+    <div class="section-label">Cảnh Báo</div>
+    <h2>6 Lỗi chết người trader hay mắc</h2>
+    <p class="section-desc">Nhận ra lỗi của mình là bước đầu tiên để trở thành trader có lợi nhuận bền vững.</p>
+
+    <div class="mistake-list">
+      <div class="mistake-item">
+        <div class="mistake-num">01</div>
+        <div class="mistake-content">
+          <div class="mistake-title">Bỏ qua đường Chikou Span</div>
+          <div class="mistake-desc">Nhiều trader xóa Chikou vì "rối mắt" — đây là sai lầm lớn nhất. Chikou là bộ lọc tín hiệu nhiễu tốt nhất của Ichimoku, không có nó bạn sẽ vào lệnh sai rất nhiều.</div>
+          <div class="mistake-fix">Luôn bật Chikou Span. Nếu Chikou không xác nhận → không vào lệnh dù tín hiệu khác đẹp.</div>
+        </div>
+      </div>
+      <div class="mistake-item">
+        <div class="mistake-num">02</div>
+        <div class="mistake-content">
+          <div class="mistake-title">Giao dịch ngược xu hướng — Bắt dao rơi</div>
+          <div class="mistake-desc">Giá đang dưới mây đỏ, dưới Kijun, Tenkan hướng xuống = xu hướng giảm mạnh. Cố mua lên là đang bắt dao rơi — nguy hiểm và tỷ lệ thất bại rất cao.</div>
+          <div class="mistake-fix">Hãy "ba phải": thị trường tăng thì mua lên, giảm thì bán xuống. Đơn giản vậy thôi.</div>
+        </div>
+      </div>
+      <div class="mistake-item">
+        <div class="mistake-num">03</div>
+        <div class="mistake-content">
+          <div class="mistake-title">Mua đuổi khi giá đã đi quá xa</div>
+          <div class="mistake-desc">Khi giá tăng mạnh và bỏ xa Kijun, Tenkan, mây Kumo — đừng vội mua đuổi theo FOMO. Giá khi đi quá xa vùng cân bằng sẽ bị "hút" trở lại để retest.</div>
+          <div class="mistake-fix">Kiên nhẫn chờ giá quay về test Kijun hoặc cạnh mây. "Nhỡ thuyền thì thuyền sẽ quay lại đón."</div>
+        </div>
+      </div>
+      <div class="mistake-item">
+        <div class="mistake-num">04</div>
+        <div class="mistake-content">
+          <div class="mistake-title">Gồng lỗ — Không chịu cắt lỗ</div>
+          <div class="mistake-desc">Mở lệnh sai nhưng không dám cắt, tâm lý "chờ giá hồi". Kết quả: tài khoản bị bào mòn dần, từ lỗ nhỏ thành lỗ lớn. Đây là nguyên nhân số 1 khiến trader cháy tài khoản.</div>
+          <div class="mistake-fix">Đặt SL ngay khi vào lệnh. Khi giá chạm SL → cắt ngay, không do dự. Thua nhỏ để thắng lớn.</div>
+        </div>
+      </div>
+      <div class="mistake-item">
+        <div class="mistake-num">05</div>
+        <div class="mistake-content">
+          <div class="mistake-title">Chỉ nhìn một khung thời gian</div>
+          <div class="mistake-desc">Phân tích H1 thấy tín hiệu mua đẹp nhưng khung Daily đang trong mây đỏ, downtrend — vào lệnh là đi ngược xu hướng chính. Đây là bẫy rất phổ biến với trader mới.</div>
+          <div class="mistake-fix">Luôn check từ Weekly → Daily → H4 trước khi dùng H1 tìm điểm vào. Top-down bắt buộc.</div>
+        </div>
+      </div>
+      <div class="mistake-item">
+        <div class="mistake-num">06</div>
+        <div class="mistake-content">
+          <div class="mistake-title">Vào lệnh khi nến chưa đóng cửa</div>
+          <div class="mistake-desc">Thấy nến đang hình thành đẹp vội vào ngay — nhưng nến chưa đóng có thể thay đổi hoàn toàn. Nhiều tín hiệu đẹp giữa nến nhưng khi đóng lại là nến râu dài đảo chiều.</div>
+          <div class="mistake-fix">Chờ nến đóng cửa xác nhận 100% rồi mới vào lệnh ở nến tiếp theo.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAKE SIGNAL -->
+  <section id="fakesignal">
+    <div class="section-label">Phòng Thủ</div>
+    <h2>Nhận biết tín hiệu giả (Fake Signal)</h2>
+    <p class="section-desc">Thị trường luôn có bẫy — nhà tạo lập cố tình tạo tín hiệu giả để quét stop loss của nhỏ lẻ trước khi đi đúng hướng.</p>
+
+    <div class="fake-grid">
+      <div class="fake-card">
+        <div class="fake-title">⚠️ Phá vỡ mây dày → Fakeout</div>
+        <div class="fake-desc">Giá đâm xuyên qua mây Kumo cực to và dày → xác suất fakeout rất cao. Lực cản tại mây dày là cực lớn, giá thường bị đẩy ngược lại.</div>
+        <div class="fake-filter">Chỉ trade breakout khi mây mỏng. Mây dày → chờ xác nhận thêm.</div>
+      </div>
+      <div class="fake-card">
+        <div class="fake-title">⚠️ Chikou không xác nhận</div>
+        <div class="fake-desc">Giá cắt xuống dưới Kijun (báo giảm), nhưng Chikou Span vẫn nằm trên mây và trên đường giá quá khứ → đây chỉ là cú rũ bỏ tạm thời, không phải đảo chiều thật.</div>
+        <div class="fake-filter">Nếu Chikou không đồng thuận với tín hiệu giá → bỏ qua tín hiệu đó.</div>
+      </div>
+      <div class="fake-card">
+        <div class="fake-title">⚠️ Breakout không có Volume</div>
+        <div class="fake-desc">Giá phá cản Kijun hoặc xuyên mây nhưng khối lượng giao dịch rất thấp, lẹt đẹt → đây chắc chắn là bull trap hoặc bear trap. Không có nhiên liệu thì xe không chạy được.</div>
+        <div class="fake-filter">Breakout hợp lệ = nến thân dài + volume đột biến cao hơn trung bình.</div>
+      </div>
+      <div class="fake-card">
+        <div class="fake-title">⚠️ Phân kỳ RSI tại kháng cự Ichimoku</div>
+        <div class="fake-desc">Giá tạo đỉnh mới cao hơn nhưng RSI tạo đỉnh thấp hơn ngay tại vùng kháng cự mây Kumo → tín hiệu cảnh báo đà tăng giả tạo, sắp đảo chiều.</div>
+        <div class="fake-filter">Kết hợp RSI Divergence với kháng cự Ichimoku để xác nhận đảo chiều.</div>
+      </div>
+      <div class="fake-card">
+        <div class="fake-title">⚠️ Quét Stop Loss (Stop Hunt)</div>
+        <div class="fake-desc">Nhà tạo lập đẩy giá lên phá cản → đạp xuống quét stop loss nhỏ lẻ → rồi mới kéo giá lên thật. Điều này xảy ra rất thường xuyên tại các vùng kháng cự quan trọng.</div>
+        <div class="fake-filter">Không mua ngay breakout, chờ giá retest lại vùng vừa phá rồi mới vào lệnh.</div>
+      </div>
+      <div class="fake-card">
+        <div class="fake-title">⚠️ TK Cross trong mây Kumo</div>
+        <div class="fake-desc">TK Cross xảy ra khi giá nằm trong mây Kumo → tín hiệu rất yếu, độ tin cậy thấp. Mây là vùng lưỡng lự của thị trường, tín hiệu bên trong thường là nhiễu.</div>
+        <div class="fake-filter">TK Cross chỉ có giá trị cao khi xảy ra trên mây xanh (mua) hoặc dưới mây đỏ (bán).</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SL/TP -->
+  <section id="sltp">
+    <div class="section-label">Kỹ Thuật</div>
+    <h2>Đặt Stop Loss & Take Profit tối ưu</h2>
+    <p class="section-desc">Ichimoku cung cấp các mức SL/TP tự nhiên — không cần đoán mò, hệ thống cho bạn biết nên đặt ở đâu.</p>
+
+    <div class="sltp-grid">
+      <div class="sltp-card sl">
+        <div class="sltp-title">✂ STOP LOSS — 3 Cấp độ</div>
+        <div class="sltp-item">
+          <div class="sltp-dot dot-yellow"></div>
+          <div><strong>Cấp 1 — Theo nến tín hiệu:</strong> Đặt dưới đáy nến tín hiệu + ATR buffer. Dùng ATR để tránh bị quét bởi biến động thường.</div>
+        </div>
+        <div class="divider"></div>
+        <div class="sltp-item">
+          <div class="sltp-dot dot-yellow"></div>
+          <div><strong>Cấp 2 — Theo Kijun-Sen:</strong> Đặt ngay dưới Kijun. An toàn hơn, ít bị quét hơn do Kijun là vùng cân bằng quan trọng.</div>
+        </div>
+        <div class="divider"></div>
+        <div class="sltp-item">
+          <div class="sltp-dot dot-red"></div>
+          <div><strong>Cấp 3 — Bên kia mây Kumo:</strong> An toàn nhất, ít bị quét nhất. Dùng khi cần SL rộng hơn để cho giá không gian biến động.</div>
+        </div>
+        <div class="divider"></div>
+        <div class="sltp-item">
+          <div class="sltp-dot dot-green"></div>
+          <div><strong>Trailing Stop:</strong> Khi lệnh có lãi, dời SL lên dưới Kijun hoặc dưới mây theo từng nến. Gồng lời tối đa, thoát khi xu hướng thật sự đảo chiều.</div>
+        </div>
+      </div>
+
+      <div class="sltp-card tp">
+        <div class="sltp-title">🎯 TAKE PROFIT — 3 Phương pháp</div>
+        <div class="sltp-item">
+          <div class="sltp-dot dot-green"></div>
+          <div><strong>Fibonacci Extension:</strong> Ichimoku đo sóng theo hình chữ N. Chốt lời tại các mốc N (1.0), V (1.272) và E (1.618) của Fibo Extension.</div>
+        </div>
+        <div class="divider"></div>
+        <div class="sltp-item">
+          <div class="sltp-dot dot-green"></div>
+          <div><strong>Cản cũ & Đỉnh/Đáy lịch sử:</strong> Chốt lời tại các vùng đỉnh/đáy cũ quan trọng mà giá từng phản ứng mạnh trong quá khứ.</div>
+        </div>
+        <div class="divider"></div>
+        <div class="sltp-item">
+          <div class="sltp-dot dot-green"></div>
+          <div><strong>Tín hiệu đảo chiều:</strong> Chủ động chốt lời khi xuất hiện nến đảo chiều (Pinbar, Evening Star) hoặc RSI Divergence tại vùng kháng cự mây.</div>
+        </div>
+        <div class="divider"></div>
+        <div class="sltp-item">
+          <div class="sltp-dot dot-yellow"></div>
+          <div><strong>IchiSmart Targets:</strong> Dùng đường MA65 → MA129 → MA234 làm các mốc TP theo quy luật Sóng N của IchiSmart.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="highlight-box">
+      <strong>⚡ Nguyên tắc bất biến:</strong> Tính R:R trước khi vào lệnh. Nếu Target/Stop Loss &lt; 2 → <strong>KHÔNG VÀO LỆNH.</strong> Không có ngoại lệ.
+    </div>
+  </section>
+
+  <!-- POSITION SIZING -->
+  <section id="sizing">
+    <div class="section-label">Quản Lý Vốn</div>
+    <h2>Position Sizing — Đi tỷ trọng đúng</h2>
+    <p class="section-desc">Không phải chỉ đúng hướng mới thắng — phải đúng cả về tỷ trọng. Nhiều trader đúng xu hướng nhưng vẫn thua vì đi size sai.</p>
+
+    <div class="sizing-visual">
+      <div class="sizing-title">// Quy tắc tỷ trọng theo bối cảnh thị trường</div>
+
+      <div class="sizing-rule">
+        <div class="sizing-pct danger">2%</div>
+        <div class="sizing-context">
+          <div class="sizing-label">Giới hạn lỗ tối đa mỗi lệnh</div>
+          <div class="sizing-desc">Tuyệt đối không để bất kỳ lệnh nào lỗ quá 2% tổng tài khoản (NAV). Đây là nguyên tắc sống còn số 1.</div>
+        </div>
+      </div>
+
+      <div class="sizing-rule">
+        <div class="sizing-pct danger">10%</div>
+        <div class="sizing-context">
+          <div class="sizing-label">Giới hạn lỗ tối đa mỗi tháng → DỪNG GIAO DỊCH</div>
+          <div class="sizing-desc">Nếu tháng (hoặc tuần) âm 10% NAV → bắt buộc dừng lại, bình tâm, review lại chiến lược. Không cố gỡ.</div>
+        </div>
+      </div>
+
+      <div class="sizing-rule">
+        <div class="sizing-pct caution">20–30%</div>
+        <div class="sizing-context">
+          <div class="sizing-label">Tỷ trọng khi thị trường sideway / chạm kháng cự nhạy cảm</div>
+          <div class="sizing-desc">Thị trường đi ngang hoặc tại vùng kháng cự lớn → hạ size xuống 20-30%. Giữ tiền mặt phòng thủ. Không dùng Margin.</div>
+        </div>
+      </div>
+
+      <div class="sizing-rule">
+        <div class="sizing-pct go">70–80%</div>
+        <div class="sizing-context">
+          <div class="sizing-label">Tỷ trọng khi xu hướng tăng mạnh, phá cản thành công</div>
+          <div class="sizing-desc">Thị trường breakout rõ ràng, mây xanh, Chikou xác nhận, volume bùng nổ → tự tin gia tăng tỷ trọng 70-80% hoặc cao hơn.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="danger-box">
+      <strong>🚫 Tuyệt đối không dùng Margin (đòn bẩy)</strong> tại các vùng đỉnh, khi xu hướng chưa rõ ràng, hoặc khi đang trong tâm lý muốn "gỡ gạc". Margin tại thời điểm sai = cháy tài khoản nhanh nhất.
+    </div>
+  </section>
+
+  <!-- VOLUME -->
+  <section id="volume">
+    <div class="section-label">Xác Nhận</div>
+    <h2>Kết hợp Volume với Ichimoku</h2>
+    <p class="section-desc">Volume là "nhiên liệu" của chuyển động giá. Ichimoku cho bạn biết hướng đi, Volume xác nhận đó là thật hay giả.</p>
+
+    <div class="volume-grid">
+      <div class="vol-card">
+        <div class="vol-title" style="color:var(--green)">📈 Breakout Hợp Lệ</div>
+        <div class="vol-desc">Giá phá vỡ Kijun hoặc xuyên mây Kumo + <strong>nến thân dài (Marubozu) + volume đột biến</strong> cao hơn trung bình = breakout thật. Đây là lúc tự tin vào lệnh thuận chiều.</div>
+      </div>
+      <div class="vol-card">
+        <div class="vol-title" style="color:var(--red)">⚠️ Breakout Giả (Bull/Bear Trap)</div>
+        <div class="vol-desc">Giá phá cản nhưng <strong>volume rất thấp, lẹt đẹt</strong> → chắc chắn là bẫy. Không có nhiên liệu thì xe không chạy được — giá sẽ quay đầu lại sau đó.</div>
+      </div>
+      <div class="vol-card">
+        <div class="vol-title" style="color:var(--accent)">🐋 Nhận diện "Cá Mập" gom hàng</div>
+        <div class="vol-desc">Giá pullback về Kijun/mây + xuất hiện <strong>nến rút chân với volume cực lớn (Selling Climax)</strong> → dòng tiền lớn đang gom hàng đỡ giá. Đây là điểm mua tốt nhất.</div>
+      </div>
+      <div class="vol-card">
+        <div class="vol-title" style="color:var(--purple)">📊 Phân kỳ Giá-Volume (Wyckoff)</div>
+        <div class="vol-desc">Giá tiến vào kháng cự với <strong>volume lớn nhưng nến có râu dài, thân nhỏ</strong> (nỗ lực lớn, kết quả nhỏ) → phe bán đang xả hàng. Sắp đảo chiều giảm.</div>
+      </div>
+      <div class="vol-card">
+        <div class="vol-title" style="color:var(--blue)">🔁 Retest + Volume cạn</div>
+        <div class="vol-desc">Giá breakout rồi quay lại retest vùng vừa phá với <strong>volume cạn kiệt</strong> (người bán không còn nhiều) → xác nhận breakout thật. Điểm vào lệnh chất lượng cao nhất.</div>
+      </div>
+      <div class="vol-card">
+        <div class="vol-title" style="color:var(--accent)">💡 Nguyên tắc cốt lõi</div>
+        <div class="vol-desc"><strong>Không bao giờ</strong> dùng Price Action mà bỏ qua Volume. Volume là công cụ xác nhận hành động giá đó là thật hay giả. Hai công cụ này phải đi cùng nhau.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PSYCHOLOGY -->
+  <section id="psychology">
+    <div class="section-label">Tâm Lý Giao Dịch</div>
+    <h2>Kiểm soát cảm xúc — Yếu tố quyết định</h2>
+    <p class="section-desc">Kỹ thuật đúng chỉ chiếm 30% thành công — 70% còn lại là tâm lý và kỷ luật. Đây là lý do nhiều người biết đúng nhưng vẫn thua.</p>
+
+    <div class="psych-grid">
+      <div class="psych-card">
+        <div class="psych-header">
+          <div class="psych-icon">😰</div>
+          <div class="psych-name" style="color:var(--red)">FOMO — Mua Đuổi</div>
+        </div>
+        <div class="psych-symptom">🔴 Biểu hiện: Thấy giá tăng mạnh, sợ bỏ lỡ → nhảy vào mua khi giá đã quá xa vùng cân bằng, hoặc mua tất tay theo tin tức tốt.</div>
+        <div class="psych-fix">✅ Khắc phục: "Lùi một bước để tiến hai bước." Chờ giá retest Kijun với volume cạn rồi mới vào. Thuyền sẽ quay lại đón.</div>
+      </div>
+      <div class="psych-card">
+        <div class="psych-header">
+          <div class="psych-icon">😤</div>
+          <div class="psych-name" style="color:var(--red)">REVENGE TRADING — Đi gỡ</div>
+        </div>
+        <div class="psych-symptom">🔴 Biểu hiện: Lỗ 5-10%, tâm lý hoang mang → cố đánh lệnh lớn hơn để gỡ gạc → phá kỷ luật → tài khoản bốc hơi 20-50%, thậm chí cháy túi.</div>
+        <div class="psych-fix">✅ Khắc phục: Tuân thủ quy tắc âm 10%/tháng → dừng ngay. Chuyên gia cũng chỉ thắng ~50%, điểm khác biệt là họ cắt lỗ ngay khi sai.</div>
+      </div>
+      <div class="psych-card">
+        <div class="psych-header">
+          <div class="psych-icon">🎰</div>
+          <div class="psych-name" style="color:var(--red)">OVERTRADING — Nghiện lệnh</div>
+        </div>
+        <div class="psych-symptom">🔴 Biểu hiện: Vào lệnh quá nhiều, liên tục, không có lý do kỹ thuật rõ ràng. Cảm giác cần phải "làm gì đó" mỗi khi nhìn chart.</div>
+        <div class="psych-fix">✅ Khắc phục: Chỉ vào lệnh khi đủ 3 điều kiện xác nhận. Không có setup rõ ràng = không vào. "Không làm gì" đôi khi là quyết định tốt nhất.</div>
+      </div>
+      <div class="psych-card">
+        <div class="psych-header">
+          <div class="psych-icon">🤞</div>
+          <div class="psych-name" style="color:var(--accent)">HOPE TRADING — Hy vọng hão</div>
+        </div>
+        <div class="psych-symptom">🔴 Biểu hiện: Lệnh đang thua nhưng không cắt lỗ vì "chắc giá sẽ hồi". Dời SL ra xa hơn. Hy vọng thay vì phân tích.</div>
+        <div class="psych-fix">✅ Khắc phục: SL là ranh giới kỹ thuật, không phải cảm xúc. Khi giá chạm SL nghĩa là phân tích ban đầu đã sai → phải tôn trọng điều đó.</div>
+      </div>
+      <div class="psych-card">
+        <div class="psych-header">
+          <div class="psych-icon">😵</div>
+          <div class="psych-name" style="color:var(--accent)">ANALYSIS PARALYSIS — Phân tích tê liệt</div>
+        </div>
+        <div class="psych-symptom">🔴 Biểu hiện: Nhìn quá nhiều chỉ báo, quá nhiều khung thời gian, mãi không quyết định được. Đến khi vào thì giá đã đi rồi.</div>
+        <div class="psych-fix">✅ Khắc phục: Chỉ dùng Ichimoku + Volume + 1 chỉ báo phụ (RSI hoặc MACD). Khi đủ 3 điều kiện xác nhận → hành động. Đơn giản hóa quy trình.</div>
+      </div>
+      <div class="psych-card">
+        <div class="psych-header">
+          <div class="psych-icon">😤</div>
+          <div class="psych-name" style="color:var(--green)">Mindset đúng đắn</div>
+        </div>
+        <div class="psych-symptom">✅ Ngay cả chuyên gia giỏi nhất cũng chỉ có xác suất thắng khoảng 50%.</div>
+        <div class="psych-fix">✅ Sự khác biệt không phải ở số lần thắng, mà ở: Thắng lớn (R:R ≥ 2:1) + Thua nhỏ (cắt lỗ ngay) + Kỷ luật tuyệt đối.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ELLIOTT & WYCKOFF -->
+  <section id="elliott">
+    <div class="section-label">Phân Tích Nâng Cao</div>
+    <h2>Elliott Wave & Wyckoff — Tips thực chiến</h2>
+    <p class="section-desc">Kết hợp Ichimoku với Elliott và Wyckoff để tăng độ chính xác trong việc nhận định chu kỳ giá.</p>
+
+    <div class="wyckoff-grid" style="margin-bottom:1.5rem;">
+      <div class="wyckoff-card">
+        <div class="wyckoff-title" style="color:var(--green)">📊 WYCKOFF — Nhận biết Tích Lũy</div>
+        <div class="signal-items" style="font-size:0.8rem; color:var(--text-dim); line-height:1.7;">
+          <div style="margin-bottom:0.5rem;">• Giá đang giảm với volume lớn, nhưng các nến sau đó giảm biên độ rất hẹp dù volume vẫn cao</div>
+          <div style="margin-bottom:0.5rem;">• <strong style="color:var(--text);">"Nỗ lực" đạp xuống không mang lại "kết quả"</strong> → lực cầu đã vào bắt đáy</div>
+          <div style="margin-bottom:0.5rem;">• Kết hợp Ichimoku: giá chạm Kijun/mây + nến rút chân volume lớn = tích lũy</div>
+          <div>• Chờ xác nhận: giá phá vỡ Kijun từ dưới lên + Chikou cắt đường giá lên trên</div>
+        </div>
+      </div>
+      <div class="wyckoff-card">
+        <div class="wyckoff-title" style="color:var(--red)">📊 WYCKOFF — Nhận biết Phân Phối</div>
+        <div style="font-size:0.8rem; color:var(--text-dim); line-height:1.7;">
+          <div style="margin-bottom:0.5rem;">• Giá đang tăng với volume cực lớn nhưng <strong style="color:var(--text);">nến có râu dài, thân nhỏ</strong></div>
+          <div style="margin-bottom:0.5rem;">• Phân kỳ giữa giá và volume: "nỗ lực lớn, kết quả nhỏ"</div>
+          <div style="margin-bottom:0.5rem;">• Dòng tiền thông minh đang bán xả hàng chặn đà tăng</div>
+          <div>• Kết hợp: tại kháng cự Ichimoku + RSI Divergence + volume bất thường = xác nhận phân phối</div>
+        </div>
+      </div>
+    </div>
+
+    <table class="elliott-table">
+      <thead>
+        <tr>
+          <th>Sóng</th>
+          <th>Loại</th>
+          <th>Fibonacci Target</th>
+          <th>Quy tắc bất biến & Tips</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="wave-badge wave-push">Sóng 1</span></td>
+          <td style="color:var(--green)">Đẩy</td>
+          <td style="font-family:monospace; font-size:0.75rem;">—</td>
+          <td>Sóng khởi động, thường khó nhận biết nhất. Volume tăng dần xác nhận sóng 1 đang hình thành.</td>
+        </tr>
+        <tr>
+          <td><span class="wave-badge wave-corr">Sóng 2</span></td>
+          <td style="color:var(--red)">Điều chỉnh</td>
+          <td style="font-family:monospace; font-size:0.75rem;">Hồi về 0.5 – 0.618 của sóng 1</td>
+          <td>⚠️ Không bao giờ được thấp hơn điểm xuất phát sóng 1. Thời gian hồi: 0.382–0.618 sóng 1.</td>
+        </tr>
+        <tr>
+          <td><span class="wave-badge wave-push">Sóng 3</span></td>
+          <td style="color:var(--green)">Đẩy (mạnh nhất)</td>
+          <td style="font-family:monospace; font-size:0.75rem;">1.272 – 1.618 – 2.618 của sóng 1</td>
+          <td>Sóng dài và mạnh nhất, không bao giờ là sóng ngắn nhất. Volume lớn nhất. Đây là sóng nên giao dịch.</td>
+        </tr>
+        <tr>
+          <td><span class="wave-badge wave-corr">Sóng 4</span></td>
+          <td style="color:var(--red)">Điều chỉnh</td>
+          <td style="font-family:monospace; font-size:0.75rem;">Hồi về 0.382 – 0.5 của sóng 3</td>
+          <td>⚠️ Đáy sóng 4 tuyệt đối không được thấp hơn đỉnh sóng 1. Vi phạm = đếm sóng sai.</td>
+        </tr>
+        <tr>
+          <td><span class="wave-badge wave-push">Sóng 5</span></td>
+          <td style="color:var(--green)">Đẩy</td>
+          <td style="font-family:monospace; font-size:0.75rem;">= sóng 1 hoặc 1.272 × sóng 4</td>
+          <td>Thường đi kèm phân kỳ RSI (volume yếu hơn sóng 3) → báo hiệu gần kết thúc xu hướng.</td>
+        </tr>
+        <tr>
+          <td><span class="wave-badge wave-corr">Sóng A-B-C</span></td>
+          <td style="color:var(--red)">Hiệu chỉnh</td>
+          <td style="font-family:monospace; font-size:0.75rem;">Sóng C kết thúc quanh 0.618–0.7 của toàn sóng</td>
+          <td>Sóng C tuyệt đối không phá đáy sóng 5 nếu xu hướng tăng dài hạn vẫn còn. Vi phạm = đảo chiều thật.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="highlight-box">
+      <strong>💡 Kết hợp Elliott + Ichimoku:</strong> Dùng Elliott để xác định đang ở sóng nào → dùng Ichimoku để xác nhận tín hiệu vào lệnh tại vùng hỗ trợ/kháng cự. Hai hệ thống bổ trợ nhau hoàn hảo.
+    </div>
+  </section>
+
+  <!-- QUOTES -->
+  <section id="quotes">
+    <div class="section-label">Châm Ngôn DSmart</div>
+    <h2>Những câu nói đáng nhớ</h2>
+    <p class="section-desc">Những nguyên tắc cốt lõi được đúc kết từ tài liệu DSmart — đọc mỗi ngày trước khi giao dịch.</p>
+
+    <div class="quotes-grid">
+      <div class="quote-card">
+        <div class="quote-text">"Nhỡ thuyền thì thuyền sẽ quay lại đón — đừng bao giờ mua đuổi."</div>
+        <div class="quote-source">// DSmart — về FOMO</div>
+      </div>
+      <div class="quote-card">
+        <div class="quote-text">"Hãy là trader ba phải: thị trường tăng thì mua lên, giảm thì bán xuống."</div>
+        <div class="quote-source">// DSmart — về giao dịch thuận xu hướng</div>
+      </div>
+      <div class="quote-card">
+        <div class="quote-text">"Thua nhỏ để thắng lớn — dám cắt lỗ là kỹ năng quan trọng nhất."</div>
+        <div class="quote-source">// DSmart — về quản lý rủi ro</div>
+      </div>
+      <div class="quote-card">
+        <div class="quote-text">"Lùi một bước để tiến hai bước — chờ retest, đừng mua đỉnh."</div>
+        <div class="quote-source">// DSmart — về điểm vào lệnh</div>
+      </div>
+      <div class="quote-card">
+        <div class="quote-text">"Volume là nhiên liệu của chuyển động giá — không có nhiên liệu thì xe không chạy được."</div>
+        <div class="quote-source">// DSmart — về xác nhận breakout</div>
+      </div>
+      <div class="quote-card">
+        <div class="quote-text">"Ngay cả chuyên gia cũng chỉ thắng 50% — điểm khác biệt là họ sai thì cắt lỗ ngay."</div>
+        <div class="quote-source">// DSmart — về tâm lý giao dịch</div>
+      </div>
+      <div class="quote-card">
+        <div class="quote-text">"Đám mây càng dày thì cản càng mạnh — đừng đánh vào tường bê tông."</div>
+        <div class="quote-source">// DSmart — về Kumo</div>
+      </div>
+      <div class="quote-card">
+        <div class="quote-text">"Chikou Span là kim chỉ nam — bỏ qua nó là bỏ đi bộ lọc tốt nhất của Ichimoku."</div>
+        <div class="quote-source">// DSmart — về Chikou</div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  TIPS & TRICKS // DSMART TRADING GUIDE &nbsp;·&nbsp; Nguồn: NotebookLM EXNESS &nbsp;·&nbsp; Chỉ mang tính giáo dục — không phải lời khuyên đầu tư
+</footer>
+
+<button id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+  window.addEventListener('scroll', () => {
+    document.getElementById('scrollTop').classList.toggle('visible', window.scrollY > 400);
+  });
+</script>
+</body>
+</html>
