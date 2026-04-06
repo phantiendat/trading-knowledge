@@ -13,7 +13,8 @@
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
-body{background:var(--bg);color:var(--text);font-family:'Be Vietnam Pro',sans-serif;font-weight:300;line-height:1.7;overflow-x:hidden;}
+body{
+    padding-top: 46px;background:var(--bg);color:var(--text);font-family:'Be Vietnam Pro',sans-serif;font-weight:300;line-height:1.7;overflow-x:hidden;}
 
 /* HERO */
 .hero{padding:5rem 2rem 3rem;text-align:center;position:relative;overflow:hidden;border-bottom:1px solid var(--border);}
@@ -142,9 +143,61 @@ footer{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center;
   .ma-concept{grid-template-columns:1fr;}
   .vol-compare{grid-template-columns:1fr;}
 }
+
+  /* ===== HOME TOPBAR ===== */
+  .home-bar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    background: rgba(10,12,16,0.97); backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 1.5rem; height: 46px; gap: 1rem;
+  }
+  .home-bar-left { display: flex; align-items: center; gap: 0.6rem; }
+  .home-link {
+    display: inline-flex; align-items: center; gap: 0.35rem;
+    color: var(--text-dim); text-decoration: none;
+    font-family: 'Space Mono', monospace; font-size: 0.62rem;
+    font-weight: 700; letter-spacing: 0.06em;
+    padding: 0.28rem 0.65rem; border: 1px solid var(--border);
+    border-radius: 4px; transition: all 0.18s; white-space: nowrap;
+  }
+  .home-link:hover { border-color: var(--accent); color: var(--accent); }
+  .breadcrumb {
+    font-family: 'Space Mono', monospace; font-size: 0.58rem;
+    color: var(--text-muted); display: flex; align-items: center; gap: 0.35rem;
+    white-space: nowrap;
+  }
+  .breadcrumb .bc-cur { color: var(--accent); }
+  .vol-nav { display: flex; gap: 0.35rem; }
+  .vol-link {
+    font-family: 'Space Mono', monospace; font-size: 0.58rem;
+    color: var(--text-muted); text-decoration: none;
+    padding: 0.22rem 0.5rem; border: 1px solid transparent;
+    border-radius: 3px; transition: all 0.15s; white-space: nowrap;
+  }
+  .vol-link:hover { color: var(--text-dim); border-color: var(--border); }
+  .vol-link.vol-active { color: var(--accent); border-color: rgba(245,158,11,0.35); background: rgba(245,158,11,0.06); }
+
 </style>
 </head>
 <body>
+<!-- HOME TOPBAR -->
+<div class="home-bar">
+  <div class="home-bar-left">
+    <a href="index.html" class="home-link">⌂ Home</a>
+    <div class="breadcrumb">
+      <span>›</span>
+      <span class="bc-cur">Vol.01 — Kiến Thức Cơ Bản</span>
+    </div>
+  </div>
+  <div class="vol-nav">
+    <a href="beginners_guide.html" class="vol-link vol-active">Vol.01 Cơ Bản</a>
+    <a href="ichimoku_guide.html" class="vol-link">Vol.02 Ichimoku</a>
+    <a href="tips_tricks.html" class="vol-link">Vol.03 Tips</a>
+    
+  </div>
+</div>
+
 
 <div class="hero">
   <div class="hero-label">DSmart Trading Guide // Vol.3 — Nền Tảng</div>
@@ -382,6 +435,36 @@ footer{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center;
 <section id="volume">
   <div class="section-label">Chủ Đề 2 / 5</div>
   <h2>Volume — Nhiên liệu của thị trường</h2>
+<div style="background:var(--surface2);border-radius:6px;padding:0.75rem;margin:0.6rem 0;">
+  <div style="font-family:'Space Mono',monospace;font-size:0.58rem;color:var(--text-muted);letter-spacing:0.1em;margin-bottom:0.5rem;">// VOLUME — Nhiên liệu của chuyển động giá</div>
+  <svg width="100%" height="100" viewBox="0 0 400 100" xmlns="http://www.w3.org/2000/svg">
+    <!-- Price line -->
+    <polyline points="10,75 50,72 90,65 130,55 165,40 185,35 210,32 250,38 280,50 310,62 350,70 390,72" fill="none" stroke="#e8eaf0" stroke-width="2"/>
+    <!-- Volume bars -->
+    <rect x="10" y="85" width="12" height="10" fill="rgba(16,185,129,0.4)" rx="1"/>
+    <rect x="30" y="82" width="12" height="13" fill="rgba(16,185,129,0.4)" rx="1"/>
+    <rect x="50" y="80" width="12" height="15" fill="rgba(16,185,129,0.4)" rx="1"/>
+    <rect x="70" y="78" width="12" height="17" fill="rgba(16,185,129,0.4)" rx="1"/>
+    <rect x="90" y="76" width="12" height="19" fill="rgba(16,185,129,0.4)" rx="1"/>
+    <rect x="110" y="74" width="12" height="21" fill="rgba(16,185,129,0.5)" rx="1"/>
+    <rect x="130" y="72" width="12" height="23" fill="rgba(16,185,129,0.5)" rx="1"/>
+    <!-- Breakout candle with huge volume -->
+    <rect x="150" y="60" width="14" height="35" fill="rgba(16,185,129,0.8)" stroke="#10b981" stroke-width="1" rx="1"/>
+    <text x="148" y="58" fill="#10b981" font-size="7" font-family="monospace">Volume ↑</text>
+    <text x="146" y="50" fill="#10b981" font-size="8" font-family="monospace">Breakout!</text>
+    <!-- Normal volume after -->
+    <rect x="175" y="83" width="12" height="12" fill="rgba(107,114,128,0.3)" rx="1"/>
+    <rect x="195" y="82" width="12" height="13" fill="rgba(107,114,128,0.3)" rx="1"/>
+    <rect x="215" y="84" width="12" height="11" fill="rgba(239,68,68,0.35)" rx="1"/>
+    <rect x="235" y="83" width="12" height="12" fill="rgba(239,68,68,0.35)" rx="1"/>
+    <rect x="255" y="82" width="12" height="13" fill="rgba(239,68,68,0.4)" rx="1"/>
+    <rect x="275" y="80" width="12" height="15" fill="rgba(239,68,68,0.4)" rx="1"/>
+    <text x="240" y="73" fill="#ef4444" font-size="7" font-family="monospace">Volume giảm → suy yếu</text>
+    <!-- Labels -->
+    <text x="10" y="100" fill="#6b7280" font-size="7" font-family="monospace">Volume nhỏ</text>
+    <text x="320" y="100" fill="#374151" font-size="7" font-family="monospace">Xu hướng yếu dần</text>
+  </svg>
+</div>
   <p class="section-desc">Volume (khối lượng giao dịch) là số lượng cổ phiếu/hợp đồng được mua bán trong một phiên. Nó trả lời câu hỏi: <em>"Có bao nhiêu người thực sự tin vào chuyển động giá này?"</em></p>
 
   <div class="vol-compare">
@@ -510,6 +593,33 @@ footer{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center;
 <section id="macross">
   <div class="section-label">Chủ Đề 4 / 5</div>
   <h2>Giao cắt MA — Tín hiệu đổi chiều xu hướng</h2>
+<div style="background:var(--surface2);border-radius:6px;padding:0.75rem;margin:0.75rem 0;">
+  <div style="font-family:'Space Mono',monospace;font-size:0.58rem;color:var(--text-muted);letter-spacing:0.1em;margin-bottom:0.5rem;">// MA CROSS — Golden Cross và Death Cross</div>
+  <svg width="100%" height="110" viewBox="0 0 560 110" xmlns="http://www.w3.org/2000/svg">
+    <!-- Grid -->
+    <line x1="0" y1="55" x2="560" y2="55" stroke="#1e2430" stroke-width="0.5"/>
+    <!-- MA Long (blue) stable -->
+    <polyline points="10,85 100,80 200,72 300,62 400,55 500,50 550,48" fill="none" stroke="#3b82f6" stroke-width="2.5" opacity="0.9"/>
+    <text x="516" y="44" fill="#3b82f6" font-size="8" font-family="monospace">MA Dài</text>
+    <!-- MA Short (red) dynamic -->
+    <polyline points="10,95 80,90 130,85 170,78 200,72 230,62 260,50 300,42 350,36 400,32 450,30 510,28 550,27" fill="none" stroke="#ef4444" stroke-width="2" opacity="0.9"/>
+    <text x="516" y="23" fill="#ef4444" font-size="8" font-family="monospace">MA Ngắn</text>
+    <!-- Golden Cross -->
+    <circle cx="202" cy="72" r="8" fill="none" stroke="#10b981" stroke-width="2"/>
+    <circle cx="202" cy="72" r="3" fill="#10b981"/>
+    <line x1="202" y1="15" x2="202" y2="64" stroke="#10b981" stroke-width="0.8" stroke-dasharray="3,2"/>
+    <text x="155" y="13" fill="#10b981" font-size="9" font-family="monospace" font-weight="bold">Golden Cross</text>
+    <text x="158" y="23" fill="#10b981" font-size="7" font-family="monospace">MA ngắn cắt lên →MUA</text>
+    <!-- Shade buy zone -->
+    <rect x="202" y="5" width="358" height="100" fill="rgba(16,185,129,0.03)" rx="2"/>
+    <!-- Death cross example (hypothetical right side) -->
+    <text x="380" y="13" fill="#ef4444" font-size="8" font-family="monospace" opacity="0.6">Death Cross</text>
+    <text x="378" y="23" fill="#ef4444" font-size="7" font-family="monospace" opacity="0.6">MA ngắn cắt xuống →BÁN</text>
+    <!-- Labels bottom -->
+    <text x="80" y="108" fill="#6b7280" font-size="7" font-family="monospace" text-anchor="middle">MA ngắn < MA dài = Giảm</text>
+    <text x="380" y="108" fill="#10b981" font-size="7" font-family="monospace" text-anchor="middle">MA ngắn > MA dài = Tăng</text>
+  </svg>
+</div>
   <p class="section-desc">Khi đường MA ngắn hạn cắt qua đường MA dài hạn — đây là tín hiệu xu hướng đang thay đổi. Hiểu điều này giúp bạn hiểu TK Cross trong Ichimoku.</p>
 
   <div class="macross-wrap">
@@ -687,6 +797,26 @@ footer{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center;
 <section id="supplydemand">
   <div class="section-label">Chủ Đề Mới — Từ 23 Nguồn</div>
   <h2>Vùng Cung Cầu & Cấu Trúc Thị Trường</h2>
+<div style="background:var(--surface2);border-radius:6px;padding:0.75rem;margin:0.6rem 0;">
+  <div style="font-family:'Space Mono',monospace;font-size:0.58rem;color:var(--text-muted);letter-spacing:0.1em;margin-bottom:0.5rem;">// VÙNG CUNG & CẦU — Supply & Demand</div>
+  <svg width="100%" height="110" viewBox="0 0 400 110" xmlns="http://www.w3.org/2000/svg">
+    <!-- Supply zone (top) -->
+    <rect x="5" y="8" width="390" height="20" fill="rgba(239,68,68,0.15)" stroke="#ef4444" stroke-width="0.8" rx="2"/>
+    <text x="10" y="22" fill="#ef4444" font-size="8" font-family="monospace" font-weight="bold">VÙNG CUNG (Supply / Kháng cự)</text>
+    <!-- Demand zone (bottom) -->
+    <rect x="5" y="82" width="390" height="20" fill="rgba(16,185,129,0.15)" stroke="#10b981" stroke-width="0.8" rx="2"/>
+    <text x="10" y="96" fill="#10b981" font-size="8" font-family="monospace" font-weight="bold">VÙNG CẦU (Demand / Hỗ trợ)</text>
+    <!-- Price bouncing between zones -->
+    <polyline points="20,95 60,75 90,38 110,20 130,35 155,60 175,90 210,72 240,42 265,18 285,32 315,55 340,88 370,70 395,38" fill="none" stroke="#e8eaf0" stroke-width="2"/>
+    <!-- Rejection arrows at supply -->
+    <text x="110" y="36" fill="#ef4444" font-size="10">↓</text>
+    <text x="265" y="36" fill="#ef4444" font-size="10">↓</text>
+    <!-- Bounce arrows at demand -->
+    <text x="60" y="80" fill="#10b981" font-size="10">↑</text>
+    <text x="175" y="95" fill="#10b981" font-size="10">↑</text>
+    <text x="340" y="95" fill="#10b981" font-size="10">↑</text>
+  </svg>
+</div>
   <p class="section-desc">Đây là bản chất thật sự đằng sau mọi tín hiệu kỹ thuật — hiểu cung cầu giúp bạn hiểu <em>tại sao</em> giá phản ứng tại các đường Ichimoku.</p>
 
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:2rem;">

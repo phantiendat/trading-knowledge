@@ -22,7 +22,8 @@
   }
   * { margin:0; padding:0; box-sizing:border-box; }
   html { scroll-behavior:smooth; }
-  body { background:var(--bg); color:var(--text); font-family:'Be Vietnam Pro',sans-serif; font-weight:300; line-height:1.7; overflow-x:hidden; }
+  body {
+    padding-top: 46px; background:var(--bg); color:var(--text); font-family:'Be Vietnam Pro',sans-serif; font-weight:300; line-height:1.7; overflow-x:hidden; }
 
   /* HERO */
   .hero {
@@ -211,9 +212,61 @@
     .sltp-grid { grid-template-columns:1fr; }
     .wyckoff-grid { grid-template-columns:1fr; }
   }
+
+  /* ===== HOME TOPBAR ===== */
+  .home-bar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    background: rgba(10,12,16,0.97); backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 1.5rem; height: 46px; gap: 1rem;
+  }
+  .home-bar-left { display: flex; align-items: center; gap: 0.6rem; }
+  .home-link {
+    display: inline-flex; align-items: center; gap: 0.35rem;
+    color: var(--text-dim); text-decoration: none;
+    font-family: 'Space Mono', monospace; font-size: 0.62rem;
+    font-weight: 700; letter-spacing: 0.06em;
+    padding: 0.28rem 0.65rem; border: 1px solid var(--border);
+    border-radius: 4px; transition: all 0.18s; white-space: nowrap;
+  }
+  .home-link:hover { border-color: var(--accent); color: var(--accent); }
+  .breadcrumb {
+    font-family: 'Space Mono', monospace; font-size: 0.58rem;
+    color: var(--text-muted); display: flex; align-items: center; gap: 0.35rem;
+    white-space: nowrap;
+  }
+  .breadcrumb .bc-cur { color: var(--accent); }
+  .vol-nav { display: flex; gap: 0.35rem; }
+  .vol-link {
+    font-family: 'Space Mono', monospace; font-size: 0.58rem;
+    color: var(--text-muted); text-decoration: none;
+    padding: 0.22rem 0.5rem; border: 1px solid transparent;
+    border-radius: 3px; transition: all 0.15s; white-space: nowrap;
+  }
+  .vol-link:hover { color: var(--text-dim); border-color: var(--border); }
+  .vol-link.vol-active { color: var(--accent); border-color: rgba(245,158,11,0.35); background: rgba(245,158,11,0.06); }
+
 </style>
 </head>
 <body>
+<!-- HOME TOPBAR -->
+<div class="home-bar">
+  <div class="home-bar-left">
+    <a href="index.html" class="home-link">⌂ Home</a>
+    <div class="breadcrumb">
+      <span>›</span>
+      <span class="bc-cur">Vol.03 — Tips & Tricks</span>
+    </div>
+  </div>
+  <div class="vol-nav">
+    <a href="beginners_guide.html" class="vol-link">Vol.01 Cơ Bản</a>
+    <a href="ichimoku_guide.html" class="vol-link">Vol.02 Ichimoku</a>
+    <a href="tips_tricks.html" class="vol-link vol-active">Vol.03 Tips</a>
+    
+  </div>
+</div>
+
 
 <div class="hero">
   <div class="hero-label">DSmart Trading Guide // Vol.2</div>
@@ -620,6 +673,26 @@
   <section id="supplydemand">
     <div class="section-label">Kiến Thức Mới — Từ 23 Nguồn</div>
     <h2>Vùng Cung & Cầu — Gốc rễ của mọi chuyển động</h2>
+<div style="background:var(--surface2);border-radius:6px;padding:0.75rem;margin:0.6rem 0;">
+  <div style="font-family:'Space Mono',monospace;font-size:0.58rem;color:var(--text-muted);letter-spacing:0.1em;margin-bottom:0.5rem;">// VÙNG CUNG & CẦU — Supply & Demand</div>
+  <svg width="100%" height="110" viewBox="0 0 400 110" xmlns="http://www.w3.org/2000/svg">
+    <!-- Supply zone (top) -->
+    <rect x="5" y="8" width="390" height="20" fill="rgba(239,68,68,0.15)" stroke="#ef4444" stroke-width="0.8" rx="2"/>
+    <text x="10" y="22" fill="#ef4444" font-size="8" font-family="monospace" font-weight="bold">VÙNG CUNG (Supply / Kháng cự)</text>
+    <!-- Demand zone (bottom) -->
+    <rect x="5" y="82" width="390" height="20" fill="rgba(16,185,129,0.15)" stroke="#10b981" stroke-width="0.8" rx="2"/>
+    <text x="10" y="96" fill="#10b981" font-size="8" font-family="monospace" font-weight="bold">VÙNG CẦU (Demand / Hỗ trợ)</text>
+    <!-- Price bouncing between zones -->
+    <polyline points="20,95 60,75 90,38 110,20 130,35 155,60 175,90 210,72 240,42 265,18 285,32 315,55 340,88 370,70 395,38" fill="none" stroke="#e8eaf0" stroke-width="2"/>
+    <!-- Rejection arrows at supply -->
+    <text x="110" y="36" fill="#ef4444" font-size="10">↓</text>
+    <text x="265" y="36" fill="#ef4444" font-size="10">↓</text>
+    <!-- Bounce arrows at demand -->
+    <text x="60" y="80" fill="#10b981" font-size="10">↑</text>
+    <text x="175" y="95" fill="#10b981" font-size="10">↑</text>
+    <text x="340" y="95" fill="#10b981" font-size="10">↑</text>
+  </svg>
+</div>
     <p class="section-desc">Đây là bản chất thật sự đằng sau mọi tín hiệu kỹ thuật. Hiểu cung cầu = hiểu tại sao giá phản ứng tại các đường Ichimoku.</p>
 
     <div class="signals-grid">
@@ -673,6 +746,42 @@
   <section id="marketstructure">
     <div class="section-label">Kiến Thức Mới</div>
     <h2>Cấu Trúc Thị Trường — Ngôn ngữ của đỉnh và đáy</h2>
+<div style="background:var(--surface2);border-radius:6px;padding:0.75rem;margin:0.6rem 0;">
+  <div style="font-family:'Space Mono',monospace;font-size:0.58rem;color:var(--text-muted);letter-spacing:0.1em;margin-bottom:0.5rem;">// CẤU TRÚC THỊ TRƯỜNG — HH/HL và LH/LL</div>
+  <svg width="100%" height="100" viewBox="0 0 560 100" xmlns="http://www.w3.org/2000/svg">
+    <!-- LEFT: Uptrend -->
+    <text x="50" y="10" fill="#10b981" font-size="8" font-family="monospace" text-anchor="middle" font-weight="bold">UPTREND</text>
+    <polyline points="10,85 40,70 55,75 80,55 95,62 120,38 135,46 160,20" fill="none" stroke="#10b981" stroke-width="2.2"/>
+    <!-- HH markers -->
+    <circle cx="80" cy="55" r="3.5" fill="#10b981"/>
+    <text x="72" y="50" fill="#10b981" font-size="7" font-family="monospace">HH</text>
+    <circle cx="160" cy="20" r="3.5" fill="#10b981"/>
+    <text x="152" y="15" fill="#10b981" font-size="7" font-family="monospace">HH</text>
+    <!-- HL markers -->
+    <circle cx="55" cy="75" r="3" fill="rgba(16,185,129,0.6)"/>
+    <text x="58" y="85" fill="rgba(16,185,129,0.8)" font-size="7" font-family="monospace">HL</text>
+    <circle cx="135" cy="46" r="3" fill="rgba(16,185,129,0.6)"/>
+    <text x="138" y="56" fill="rgba(16,185,129,0.8)" font-size="7" font-family="monospace">HL</text>
+    <!-- Divider -->
+    <line x1="200" y1="5" x2="200" y2="95" stroke="#1e2430" stroke-width="1" stroke-dasharray="4,3"/>
+    <!-- RIGHT: Downtrend -->
+    <text x="380" y="10" fill="#ef4444" font-size="8" font-family="monospace" text-anchor="middle" font-weight="bold">DOWNTREND</text>
+    <polyline points="220,18 250,35 265,28 295,50 310,42 340,65 355,58 390,80" fill="none" stroke="#ef4444" stroke-width="2.2"/>
+    <!-- LH markers -->
+    <circle cx="220" cy="18" r="3.5" fill="#ef4444"/>
+    <text x="222" y="13" fill="#ef4444" font-size="7" font-family="monospace">LH</text>
+    <circle cx="295" cy="50" r="3.5" fill="#ef4444"/>
+    <text x="298" y="45" fill="#ef4444" font-size="7" font-family="monospace">LH</text>
+    <!-- LL markers -->
+    <circle cx="265" cy="28" r="3" fill="rgba(239,68,68,0.6)"/>
+    <text x="268" y="38" fill="rgba(239,68,68,0.8)" font-size="7" font-family="monospace">LL</text>
+    <circle cx="355" cy="58" r="3" fill="rgba(239,68,68,0.6)"/>
+    <text x="358" y="68" fill="rgba(239,68,68,0.8)" font-size="7" font-family="monospace">LL</text>
+    <!-- Buy zone label -->
+    <text x="85" y="98" fill="#10b981" font-size="7" font-family="monospace" text-anchor="middle">→ Mua tại HL</text>
+    <text x="310" y="98" fill="#ef4444" font-size="7" font-family="monospace" text-anchor="middle">→ Bán tại LH</text>
+  </svg>
+</div>
     <p class="section-desc">Trước khi dùng bất kỳ chỉ báo nào, hãy đọc được cấu trúc thị trường. Đây là nền tảng mà mọi phân tích phải đứng trên.</p>
 
     <div class="signals-grid" style="margin-bottom:1.5rem;">
