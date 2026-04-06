@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DSmart Trading Knowledge</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400&family=Space+Mono:wght@400;700&family=Be+Vietnam+Pro:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0a0c10; --surface:#111318; --surface2:#181c24; --border:#1e2430;
+  --text:#e8eaf0; --text-dim:#6b7280; --text-muted:#374151;
+  --accent:#f59e0b; --green:#10b981; --red:#ef4444; --blue:#3b82f6; --purple:#a78bfa;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Be Vietnam Pro',sans-serif;font-weight:300;line-height:1.7;overflow-x:hidden;min-height:100vh;}
+
+/* ANIMATED BG */
+.bg-glow {
+  position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(ellipse 80% 50% at 20% 20%, rgba(245,158,11,0.04) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 80%, rgba(59,130,246,0.04) 0%, transparent 50%),
+    radial-gradient(ellipse 50% 60% at 50% 50%, rgba(16,185,129,0.03) 0%, transparent 60%);
+}
+
+/* HERO */
+.hero {
+  position:relative;z-index:1;
+  min-height:100vh;
+  display:flex;flex-direction:column;justify-content:center;align-items:center;
+  text-align:center;padding:4rem 2rem;
+}
+
+/* Floating kanji decorations */
+.kanji-bg {
+  position:absolute;inset:0;overflow:hidden;pointer-events:none;
+  font-family:'Noto Serif JP',serif;
+}
+.kanji-char {
+  position:absolute;font-size:8rem;font-weight:300;opacity:0.025;color:var(--accent);
+  animation:float 20s ease-in-out infinite;
+}
+.kanji-char:nth-child(1){top:10%;left:5%;animation-delay:0s;}
+.kanji-char:nth-child(2){top:20%;right:8%;animation-delay:-5s;font-size:5rem;}
+.kanji-char:nth-child(3){bottom:15%;left:10%;animation-delay:-10s;font-size:6rem;}
+.kanji-char:nth-child(4){bottom:25%;right:5%;animation-delay:-15s;font-size:9rem;}
+.kanji-char:nth-child(5){top:50%;left:50%;transform:translate(-50%,-50%);font-size:20rem;animation-delay:-7s;opacity:0.015;}
+@keyframes float{0%,100%{transform:translateY(0) rotate(0deg);}50%{transform:translateY(-20px) rotate(3deg);}}
+.kanji-char:nth-child(3){animation-name:float2;}
+@keyframes float2{0%,100%{transform:translateY(0) rotate(0deg);}50%{transform:translateY(15px) rotate(-2deg);}}
+
+.hero-eyebrow {
+  font-family:'Space Mono',monospace;font-size:0.65rem;letter-spacing:0.3em;
+  color:var(--accent);text-transform:uppercase;margin-bottom:1.5rem;
+  opacity:0;animation:fadeUp 0.8s ease 0.2s forwards;
+}
+.hero-logo {
+  font-family:'Noto Serif JP',serif;font-size:clamp(0.9rem,2.5vw,1.2rem);
+  font-weight:300;letter-spacing:0.15em;color:var(--text-dim);
+  margin-bottom:1rem;opacity:0;animation:fadeUp 0.8s ease 0.35s forwards;
+}
+.hero h1 {
+  font-family:'Noto Serif JP',serif;
+  font-size:clamp(2.8rem,9vw,6.5rem);
+  font-weight:300;line-height:1.05;letter-spacing:-0.02em;
+  margin-bottom:1.5rem;
+  opacity:0;animation:fadeUp 0.8s ease 0.5s forwards;
+}
+.hero h1 .line1{display:block;color:var(--text);}
+.hero h1 .line2{display:block;color:var(--accent);}
+.hero h1 .line3{display:block;color:var(--text-dim);font-size:0.55em;}
+
+.hero-desc {
+  color:var(--text-dim);font-size:clamp(0.85rem,2vw,1rem);
+  max-width:500px;margin:0 auto 3rem;
+  opacity:0;animation:fadeUp 0.8s ease 0.65s forwards;
+}
+
+.hero-source {
+  display:inline-flex;align-items:center;gap:0.5rem;
+  font-family:'Space Mono',monospace;font-size:0.65rem;
+  color:var(--text-muted);border:1px solid var(--border);
+  padding:0.4rem 0.9rem;border-radius:20px;margin-bottom:3rem;
+  opacity:0;animation:fadeUp 0.8s ease 0.75s forwards;
+}
+.source-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
+
+.scroll-hint {
+  position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);
+  font-family:'Space Mono',monospace;font-size:0.6rem;color:var(--text-muted);
+  letter-spacing:0.15em;text-transform:uppercase;
+  display:flex;flex-direction:column;align-items:center;gap:0.5rem;
+  opacity:0;animation:fadeUp 0.8s ease 1.2s forwards;
+}
+.scroll-arrow{animation:bounce 2s ease-in-out infinite;}
+@keyframes bounce{0%,100%{transform:translateY(0);}50%{transform:translateY(6px);}}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+
+/* CARDS SECTION */
+.cards-section {
+  position:relative;z-index:1;
+  max-width:1100px;margin:0 auto;padding:0 1.5rem 8rem;
+}
+
+.section-header {
+  text-align:center;margin-bottom:3rem;
+  padding-top:2rem;
+}
+.section-header .label {
+  font-family:'Space Mono',monospace;font-size:0.62rem;letter-spacing:0.2em;
+  color:var(--accent);text-transform:uppercase;margin-bottom:0.75rem;
+}
+.section-header h2 {
+  font-family:'Noto Serif JP',serif;font-size:clamp(1.4rem,3vw,1.8rem);
+  font-weight:300;color:var(--text-dim);
+}
+
+/* MAIN CARDS GRID */
+.cards-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+  gap:1.5rem;
+  margin-bottom:3rem;
+}
+
+.guide-card {
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:2rem;
+  text-decoration:none;
+  color:var(--text);
+  display:flex;flex-direction:column;
+  position:relative;overflow:hidden;
+  transition:all 0.25s ease;
+  cursor:pointer;
+}
+.guide-card::before {
+  content:'';position:absolute;inset:0;border-radius:10px;
+  opacity:0;transition:opacity 0.25s;
+}
+.guide-card:hover{transform:translateY(-3px);border-color:#374151;}
+.guide-card:hover::before{opacity:1;}
+
+.guide-card.vol1::before{background:radial-gradient(ellipse at 0% 0%,rgba(245,158,11,0.06) 0%,transparent 60%);}
+.guide-card.vol2::before{background:radial-gradient(ellipse at 0% 0%,rgba(239,68,68,0.05) 0%,transparent 60%);}
+.guide-card.vol3::before{background:radial-gradient(ellipse at 0% 0%,rgba(59,130,246,0.05) 0%,transparent 60%);}
+
+.card-vol {
+  font-family:'Space Mono',monospace;font-size:0.58rem;letter-spacing:0.2em;
+  text-transform:uppercase;margin-bottom:1.25rem;
+  display:flex;align-items:center;gap:0.75rem;
+}
+.card-vol::after{content:'';flex:1;height:1px;background:var(--border);}
+
+.card-icon {
+  font-size:2.5rem;margin-bottom:1rem;line-height:1;
+  display:block;
+}
+
+.card-title {
+  font-family:'Noto Serif JP',serif;
+  font-size:1.4rem;font-weight:300;
+  line-height:1.2;margin-bottom:0.75rem;
+}
+
+.card-desc {
+  font-size:0.82rem;color:var(--text-dim);
+  line-height:1.6;margin-bottom:1.5rem;flex:1;
+}
+
+.card-topics {
+  display:flex;flex-wrap:wrap;gap:0.4rem;margin-bottom:1.5rem;
+}
+.topic-tag {
+  font-family:'Space Mono',monospace;font-size:0.58rem;
+  padding:0.2rem 0.5rem;border-radius:3px;
+  background:var(--surface2);border:1px solid var(--border);
+  color:var(--text-muted);white-space:nowrap;
+}
+
+.card-cta {
+  display:flex;align-items:center;justify-content:space-between;
+  padding-top:1.25rem;border-top:1px solid var(--border);
+  font-family:'Space Mono',monospace;font-size:0.68rem;
+  font-weight:700;
+}
+.guide-card.vol1 .card-cta{color:var(--accent);}
+.guide-card.vol2 .card-cta{color:var(--red);}
+.guide-card.vol3 .card-cta{color:var(--blue);}
+
+.cta-arrow {
+  font-size:1rem;transition:transform 0.2s;
+}
+.guide-card:hover .cta-arrow{transform:translateX(4px);}
+
+/* LEARNING PATH */
+.path-section {
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:10px;padding:2rem;margin-bottom:3rem;
+}
+.path-title {
+  font-family:'Space Mono',monospace;font-size:0.65rem;
+  color:var(--accent);letter-spacing:0.15em;text-transform:uppercase;
+  margin-bottom:1.5rem;
+}
+.path-steps {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:0;
+}
+.path-step {
+  display:flex;flex-direction:column;
+  padding:1rem;position:relative;
+}
+.path-step:not(:last-child)::after {
+  content:'→';
+  position:absolute;right:-0.5rem;top:50%;transform:translateY(-50%);
+  color:var(--text-muted);font-size:1rem;z-index:1;
+}
+.step-num {
+  font-family:'Space Mono',monospace;font-size:0.6rem;
+  color:var(--text-muted);margin-bottom:0.4rem;
+}
+.step-link {
+  text-decoration:none;color:var(--text);
+  font-size:0.82rem;font-weight:500;margin-bottom:0.25rem;
+  transition:color 0.2s;
+}
+.step-link:hover{color:var(--accent);}
+.step-note{font-size:0.72rem;color:var(--text-muted);}
+.step-badge {
+  display:inline-block;font-family:'Space Mono',monospace;font-size:0.55rem;
+  padding:0.1rem 0.35rem;border-radius:3px;margin-top:0.35rem;
+  background:rgba(245,158,11,0.12);color:var(--accent);
+}
+
+/* STATS ROW */
+.stats-row {
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+  gap:1rem;margin-bottom:3rem;
+}
+.stat-card {
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:8px;padding:1.25rem;text-align:center;
+}
+.stat-num {
+  font-family:'Space Mono',monospace;font-size:1.8rem;
+  font-weight:700;line-height:1;margin-bottom:0.25rem;
+}
+.stat-label{font-size:0.72rem;color:var(--text-muted);}
+
+/* FOOTER */
+footer {
+  position:relative;z-index:1;
+  border-top:1px solid var(--border);
+  padding:2.5rem 1.5rem;text-align:center;
+}
+.footer-logo {
+  font-family:'Noto Serif JP',serif;font-size:1.1rem;
+  color:var(--text-muted);margin-bottom:0.5rem;letter-spacing:0.1em;
+}
+.footer-meta {
+  font-family:'Space Mono',monospace;font-size:0.6rem;
+  color:var(--text-muted);letter-spacing:0.1em;
+  display:flex;align-items:center;justify-content:center;gap:1rem;flex-wrap:wrap;
+}
+.footer-dot{width:3px;height:3px;border-radius:50%;background:var(--text-muted);}
+
+/* SCROLL TOP */
+#scrollTop{position:fixed;bottom:2rem;right:2rem;width:40px;height:40px;background:var(--surface);border:1px solid var(--border);border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1rem;transition:all 0.2s;opacity:0;pointer-events:none;z-index:50;}
+#scrollTop.visible{opacity:1;pointer-events:all;}
+#scrollTop:hover{border-color:var(--accent);color:var(--accent);}
+
+@media(max-width:600px){
+  .path-step:not(:last-child)::after{display:none;}
+  .path-steps{gap:0.5rem;}
+}
+</style>
+</head>
+<body>
+
+<div class="bg-glow"></div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="kanji-bg">
+    <div class="kanji-char">雲</div>
+    <div class="kanji-char">道</div>
+    <div class="kanji-char">均</div>
+    <div class="kanji-char">衡</div>
+    <div class="kanji-char">一目</div>
+  </div>
+
+  <div class="hero-eyebrow">DSmart Trading Knowledge Base</div>
+  <div class="hero-logo">一目均衡表 — Ichimoku Kinko Hyo</div>
+
+  <h1>
+    <span class="line1">Hệ Thống</span>
+    <span class="line2">Giao Dịch</span>
+    <span class="line3">Phân tích kỹ thuật toàn diện theo phương pháp DSmart</span>
+  </h1>
+
+  <p class="hero-desc">Từ nến Nhật cơ bản đến chiến lược IchiSmart nâng cao — tất cả được tổng hợp và mô hình hóa từ tài liệu DSmart.</p>
+
+  <div class="hero-source">
+    <div class="source-dot"></div>
+    Nguồn: NotebookLM EXNESS × Claude MCP
+  </div>
+
+  <div class="scroll-hint">
+    <span>Khám phá</span>
+    <span class="scroll-arrow">↓</span>
+  </div>
+</div>
+
+<!-- CARDS -->
+<div class="cards-section">
+
+  <!-- STATS -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-num" style="color:var(--accent)">3</div>
+      <div class="stat-label">Tập hướng dẫn</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" style="color:var(--green)">20+</div>
+      <div class="stat-label">Chủ đề chuyên sâu</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" style="color:var(--blue)">70+</div>
+      <div class="stat-label">Tips & Tricks</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" style="color:var(--purple)">23</div>
+      <div class="stat-label">Nguồn tài liệu</div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="label">Thư Viện Kiến Thức</div>
+    <h2>Chọn chủ đề bạn muốn học</h2>
+  </div>
+
+  <!-- MAIN CARDS -->
+  <div class="cards-grid">
+
+    <!-- VOL 1 -->
+    <a href="beginners_guide.html" class="guide-card vol3">
+      <div class="card-vol" style="color:var(--blue)">Vol.01 — Nền Tảng</div>
+      <span class="card-icon">📐</span>
+      <div class="card-title">Kiến Thức<br>Cơ Bản</div>
+      <div class="card-desc">Bắt đầu từ đây nếu bạn là người mới. Hiểu ngôn ngữ của thị trường trước khi học bất kỳ chiến lược nào.</div>
+      <div class="card-topics">
+        <span class="topic-tag">Nến Nhật OHLC</span>
+        <span class="topic-tag">8 Mẫu nến đảo chiều</span>
+        <span class="topic-tag">Volume</span>
+        <span class="topic-tag">Hỗ trợ & Kháng cự</span>
+        <span class="topic-tag">Moving Average</span>
+        <span class="topic-tag">Golden/Death Cross</span>
+        <span class="topic-tag">Đa khung thời gian</span>
+        <span class="topic-tag">MA ↔ Ichimoku</span>
+      </div>
+      <div class="card-cta">
+        <span>Đọc Vol.01</span>
+        <span class="cta-arrow">→</span>
+      </div>
+    </a>
+
+    <!-- VOL 2 -->
+    <a href="ichimoku_guide.html" class="guide-card vol1">
+      <div class="card-vol" style="color:var(--accent)">Vol.02 — Hệ Thống Chính</div>
+      <span class="card-icon">☁</span>
+      <div class="card-title">Ichimoku<br>Toàn Diện</div>
+      <div class="card-desc">Giải mã hoàn toàn hệ thống Ichimoku Kinko Hyo — từ 5 đường cơ bản đến chiến lược IchiSmart nâng cao của DSmart.</div>
+      <div class="card-topics">
+        <span class="topic-tag">5 Đường Ichimoku</span>
+        <span class="topic-tag">Mây Kumo xanh/đỏ</span>
+        <span class="topic-tag">TK Cross</span>
+        <span class="topic-tag">Kumo Breakout</span>
+        <span class="topic-tag">Chikou Signal</span>
+        <span class="topic-tag">IchiSmart MA65/129/234</span>
+        <span class="topic-tag">Xoắn Mây</span>
+        <span class="topic-tag">Checklist vào lệnh</span>
+      </div>
+      <div class="card-cta">
+        <span>Đọc Vol.02</span>
+        <span class="cta-arrow">→</span>
+      </div>
+    </a>
+
+    <!-- VOL 3 -->
+    <a href="tips_tricks.html" class="guide-card vol2">
+      <div class="card-vol" style="color:var(--red)">Vol.03 — Thực Chiến</div>
+      <span class="card-icon">⚔</span>
+      <div class="card-title">Tips & Tricks<br>Thực Chiến</div>
+      <div class="card-desc">Những bí kíp, cạm bẫy và nguyên tắc sống còn từ kinh nghiệm thực chiến — giúp bạn tránh những lỗi đắt giá nhất.</div>
+      <div class="card-topics">
+        <span class="topic-tag">6 Lỗi chết người</span>
+        <span class="topic-tag">Tín hiệu giả Fake Signal</span>
+        <span class="topic-tag">SL/TP tối ưu</span>
+        <span class="topic-tag">Position Sizing</span>
+        <span class="topic-tag">Kết hợp Volume</span>
+        <span class="topic-tag">FOMO & Revenge</span>
+        <span class="topic-tag">Elliott & Wyckoff</span>
+        <span class="topic-tag">Châm ngôn DSmart</span>
+      </div>
+      <div class="card-cta">
+        <span>Đọc Vol.03</span>
+        <span class="cta-arrow">→</span>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- LEARNING PATH -->
+  <div class="path-section">
+    <div class="path-title">// Lộ trình học đề xuất — Từ Zero đến Trader</div>
+    <div class="path-steps">
+      <div class="path-step">
+        <div class="step-num">BƯỚC 01</div>
+        <a href="beginners_guide.html" class="step-link">Nến Nhật & Volume</a>
+        <div class="step-note">Học ngôn ngữ thị trường</div>
+        <span class="step-badge">Vol.01 — Phần 1</span>
+      </div>
+      <div class="path-step">
+        <div class="step-num">BƯỚC 02</div>
+        <a href="beginners_guide.html#ma" class="step-link">Moving Average</a>
+        <div class="step-note">Hiểu MA → hiểu Ichimoku</div>
+        <span class="step-badge">Vol.01 — Phần 2</span>
+      </div>
+      <div class="path-step">
+        <div class="step-num">BƯỚC 03</div>
+        <a href="ichimoku_guide.html" class="step-link">5 Đường Ichimoku</a>
+        <div class="step-note">Hệ thống chính</div>
+        <span class="step-badge">Vol.02 — Phần 1</span>
+      </div>
+      <div class="path-step">
+        <div class="step-num">BƯỚC 04</div>
+        <a href="ichimoku_guide.html#signals" class="step-link">Tín hiệu Giao Dịch</a>
+        <div class="step-note">TK Cross · Breakout · Chikou</div>
+        <span class="step-badge">Vol.02 — Phần 2</span>
+      </div>
+      <div class="path-step">
+        <div class="step-num">BƯỚC 05</div>
+        <a href="ichimoku_guide.html#ichismart" class="step-link">IchiSmart & Xoắn Mây</a>
+        <div class="step-note">Chiến lược nâng cao</div>
+        <span class="step-badge">Vol.02 — Phần 3</span>
+      </div>
+      <div class="path-step">
+        <div class="step-num">BƯỚC 06</div>
+        <a href="tips_tricks.html" class="step-link">Tips & Tricks Thực Chiến</a>
+        <div class="step-note">Áp dụng thực tế</div>
+        <span class="step-badge">Vol.03 — Full</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUICK LINKS -->
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:2rem;">
+    <div style="font-family:'Space Mono',monospace;font-size:0.65rem;color:var(--accent);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:1.5rem;">// Tra cứu nhanh theo chủ đề</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:0.5rem;">
+
+      <a href="beginners_guide.html#candles" style="text-decoration:none;display:flex;align-items:center;gap:0.6rem;padding:0.6rem 0.8rem;background:var(--surface2);border:1px solid var(--border);border-radius:5px;font-size:0.78rem;color:var(--text-dim);transition:all 0.2s;" onmouseover="this.style.borderColor='#3b82f6';this.style.color='#3b82f6'" onmouseout="this.style.borderColor='#1e2430';this.style.color='#6b7280'">
+        <span>🕯</span> Cấu tạo nến Nhật
+      </a>
+      <a href="beginners_guide.html#patterns" style="text-decoration:none;display:flex;align-items:center;gap:0.6rem;padding:0.6rem 0.8rem;background:var(--surface2);border:1px solid var(--border);border-radius:5px;font-size:0.78rem;color:var(--text-dim);transition:all 0.2s;" onmouseover="this.style.borderColor='#3b82f6';this.style.color='#3b82f6'" onmouseout="this.style.borderColor='#1e2430';this.style.color='#6b7280'">
+        <span>📊</span> Mẫu nến đảo chiều
+      </a>
+      <a href="beginners_guide.html#volume" style="text-decoration:none;display:flex;align-items:center;gap:0.6rem;padding:0.6rem 0.8rem;background:var(--surface2);border:1px solid var(--border);border-radius:5px;font-size:0.78rem;color:var(--text-dim);transition:all 0.2s;" onmouseover="this.style.borderColor='#3b82f6';this.style.color='#3b82f6'" onmouseout="this.style.borderColor='#1e2430';this.style.color='#6b7280'">
+        <span>📈</span> Volume giao dịch
+      </a>
+      <a href="beginners_guide.html#sr" style="text-decoration:none;display:flex;align-items:center;gap:0.6rem;padding:0.6rem 0.8rem;background:var(--surface2);border:1px solid var(--border);border-radius:5px;font-size:0.78rem;color:var(--text-dim);transition:all 0.2s;" onmouseover="this.style.borderColor='#3b82f6';this.style.color='#3b82f6'" onmouseout="this.style.borderColor='#1e2430';this.style.color='#6b7280'">
+        <span>🏗</span> Hỗ trợ & Kháng cự
+      </a>
+      <a href="beginners_guide.html#ma" style="text-decoration:none;display:flex;align-items:center;gap:0.6rem;padding:0.6rem 0.8rem;background:var(--surface2);border:1px solid var(--border);border-radius:5px;font-size:0.78rem;color:var(--text-dim);transition:all 0.2s;" onmouseover="this.style.borderColor='#3b82f6';this.style.color='#3b82f6'" onmouseout="this.style.borderColor='#1e2430';this.style.color='#6b7280'">
+        <span>〰</span> Moving Average MA
+      </a>
+      <a href="beginners_guide.html#macross" style="text-decoration:none;display:flex;align-items:center;gap:0.6rem;padding:0.6rem 0.8rem;background:var(--surface2);border:1px solid var(--border);border-radius:5px;font-size:0.78rem;color:var(--text-dim);transition:all 0.2s;" onmouseover="this.style.borderColor='#3b82f6';this.style.color='#3b82f6'" onmouseout="this.style.borderColor='#1e2430';this.style.color='#6b7280'">
+        <span>✕</span> Golden / Death Cross
+      </a>
+      <a href="beginners_guide.html#mtf" style="text-decoration:none;display:flex;align-items:center;gap:0.6rem;padding:0.6rem 0.8rem;background:var(--surface2);border:1px solid var(--border);border-radius:5px;font-size:0.78rem;color:var(--text-dim);transition:all 0.2s;" onmouseover="this.style.borderColor='#3b82f6';this.style.color='#3b82f6'" onmouseout="this.style.borderColor='#1e2430';this.style.color='#6b7280'">
+        <span>⊞</span> Đa khung thời gian
+      </a>
+      <a href="beginners_guide.html#connection" style="text-decoration:none;display:flex;align-items:center;gap:0.6rem;padding:0.6rem 0.8rem;background:var(--surface2);border:1px solid var(--border);border-radius:5px;font-size:0.78rem;color:var(--text-dim);transition:all 0.2s;" onmouseover="this.style.borderColor='#3b82f6';this.style.color='#3b82f6'" onmouseout="this.style.borderColor='#1e2430';this.style.color='#6b7280'">
+        <span>🔗</span> MA ↔ Ichimoku
+      </a>
+      <a href="ichimoku_guide.html#components" style="text-decoration:none;display:flex;align-items:center;gap:0.6rem;padding:0.6rem 0.8rem;background:var(--surface2);border:1px solid var(--border);border-radius:5px;font-size:0.78rem;color:var(--text-dim);transition:all 0.2s;" onmouseover="this.style.borderColor='#f59e0b';this.style.color='#f59e0b'" onmouseout="this.style.borderColor='#1e2430';this.style.color='#6b7280'">
+        <span>⬡</span> 5 Đường Ichimoku
+      </a>
+      <a href="ichimoku_guide.html#kumo" style="text-decoration:none;display:flex;align-items:center;gap:0.6rem;padding:0.6rem 0.8rem;background:var(--surface2);border:1px solid var(--border);border-radius:5px;font-size:0.78rem;color:var(--text-dim);transition:all 0.2s;" onmouseover="this.style.borderColor='#f59e0b';this.style.color='#f59e0b'" onmouseout="this.style.borderColor='#1e2430';this.style.color='#6b7280'">
+        <span>☁</span> Đám mây Kumo
+      </a>
+      <a href="ichimoku_guide.html#signals" style="text-decoration:none;display:flex;align-items:center;gap:0.6rem;padding:0.6rem 0.8rem;background:var(--surface2);border:1px solid var(--border);border-radius:5px;font-size:0.78rem;color:var(--text-dim);transition:all 0.2s;" onmouseover="this.style.borderColor='#f59e0b';this.style.color='#f59e0b'" onmouseout="this.style.borderColor='#1e2430';this.style.color='#6b7280'">
+        <span>↗</span> Tín hiệu giao dịch
+      </a>
+      <a href="ichimoku_guide.html#ichismart" style="text-decoration:none;display:flex;align-items:center;gap:0.6rem;padding:0.6rem 0.8rem;background:var(--surface2);border:1px solid var(--border);border-radius:5px;font-size:0.78rem;color:var(--text-dim);transition:all 0.2s;" onmouseover="this.style.borderColor='#f59e0b';this.style.color='#f59e0b'" onmouseout="this.style.borderColor='#1e2430';this.style.color='#6b7280'">
+        <span>◈</span> IchiSmart MA65/129/234
+      </a>
+      <a href="ichimoku_guide.html#xoanmay" style="text-decoration:none;display:flex;align-items:center;gap:0.6rem;padding:0.6rem 0.8rem;background:var(--surface2);border:1px solid var(--border);border-radius:5px;font-size:0.78rem;color:var(--text-dim);transition:all 0.2s;" onmouseover="this.style.borderColor='#f59e0b';this.style.color='#f59e0b'" onmouseout="this.style.borderColor='#1e2430';this.style.color='#6b7280'">
+        <span>🌀</span> Xoắn Mây
+      </a>
+      <a href="ichimoku_guide.html#rules" style="text-decoration:none;display:flex;align-items:center;gap:0.6rem;padding:0.6rem 0.8rem;background:var(--surface2);border:1px solid var(--border);border-radius:5px;font-size:0.78rem;color:var(--text-dim);transition:all 0.2s;" onmouseover="this.style.borderColor='#f59e0b';this.style.color='#f59e0b'" onmouseout="this.style.borderColor='#1e2430';this.style.color='#6b7280'">
+        <span>✓</span> 8 Quy tắc vàng
+      </a>
+      <a href="ichimoku_guide.html#checklist" style="text-decoration:none;display:flex;align-items:center;gap:0.6rem;padding:0.6rem 0.8rem;background:var(--surface2);border:1px solid var(--border);border-radius:5px;font-size:0.78rem;color:var(--text-dim);transition:all 0.2s;" onmouseover="this.style.borderColor='#f59e0b';this.style.color='#f59e0b'" onmouseout="this.style.borderColor='#1e2430';this.style.color='#6b7280'">
+        <span>📋</span> Checklist vào lệnh
+      </a>
+      <a href="tips_tricks.html#mistakes" style="text-decoration:none;display:flex;align-items:center;gap:0.6rem;padding:0.6rem 0.8rem;background:var(--surface2);border:1px solid var(--border);border-radius:5px;font-size:0.78rem;color:var(--text-dim);transition:all 0.2s;" onmouseover="this.style.borderColor='#ef4444';this.style.color='#ef4444'" onmouseout="this.style.borderColor='#1e2430';this.style.color='#6b7280'">
+        <span>🚫</span> 6 Lỗi chết người
+      </a>
+      <a href="tips_tricks.html#fakesignal" style="text-decoration:none;display:flex;align-items:center;gap:0.6rem;padding:0.6rem 0.8rem;background:var(--surface2);border:1px solid var(--border);border-radius:5px;font-size:0.78rem;color:var(--text-dim);transition:all 0.2s;" onmouseover="this.style.borderColor='#ef4444';this.style.color='#ef4444'" onmouseout="this.style.borderColor='#1e2430';this.style.color='#6b7280'">
+        <span>⚠️</span> Nhận biết tín hiệu giả
+      </a>
+      <a href="tips_tricks.html#sltp" style="text-decoration:none;display:flex;align-items:center;gap:0.6rem;padding:0.6rem 0.8rem;background:var(--surface2);border:1px solid var(--border);border-radius:5px;font-size:0.78rem;color:var(--text-dim);transition:all 0.2s;" onmouseover="this.style.borderColor='#ef4444';this.style.color='#ef4444'" onmouseout="this.style.borderColor='#1e2430';this.style.color='#6b7280'">
+        <span>✂</span> SL & TP tối ưu
+      </a>
+      <a href="tips_tricks.html#sizing" style="text-decoration:none;display:flex;align-items:center;gap:0.6rem;padding:0.6rem 0.8rem;background:var(--surface2);border:1px solid var(--border);border-radius:5px;font-size:0.78rem;color:var(--text-dim);transition:all 0.2s;" onmouseover="this.style.borderColor='#ef4444';this.style.color='#ef4444'" onmouseout="this.style.borderColor='#1e2430';this.style.color='#6b7280'">
+        <span>💰</span> Quản lý vốn
+      </a>
+      <a href="tips_tricks.html#psychology" style="text-decoration:none;display:flex;align-items:center;gap:0.6rem;padding:0.6rem 0.8rem;background:var(--surface2);border:1px solid var(--border);border-radius:5px;font-size:0.78rem;color:var(--text-dim);transition:all 0.2s;" onmouseover="this.style.borderColor='#ef4444';this.style.color='#ef4444'" onmouseout="this.style.borderColor='#1e2430';this.style.color='#6b7280'">
+        <span>🧠</span> Tâm lý giao dịch
+      </a>
+      <a href="tips_tricks.html#quotes" style="text-decoration:none;display:flex;align-items:center;gap:0.6rem;padding:0.6rem 0.8rem;background:var(--surface2);border:1px solid var(--border);border-radius:5px;font-size:0.78rem;color:var(--text-dim);transition:all 0.2s;" onmouseover="this.style.borderColor='#ef4444';this.style.color='#ef4444'" onmouseout="this.style.borderColor='#1e2430';this.style.color='#6b7280'">
+        <span>💬</span> Châm ngôn DSmart
+      </a>
+      <a href="tips_tricks.html#supplydemand" style="text-decoration:none;display:flex;align-items:center;gap:0.6rem;padding:0.6rem 0.8rem;background:var(--surface2);border:1px solid var(--border);border-radius:5px;font-size:0.78rem;color:var(--text-dim);transition:all 0.2s;" onmouseover="this.style.borderColor='#10b981';this.style.color='#10b981'" onmouseout="this.style.borderColor='#1e2430';this.style.color='#6b7280'">
+        <span>⚖</span> Vùng Cung & Cầu
+      </a>
+      <a href="tips_tricks.html#marketstructure" style="text-decoration:none;display:flex;align-items:center;gap:0.6rem;padding:0.6rem 0.8rem;background:var(--surface2);border:1px solid var(--border);border-radius:5px;font-size:0.78rem;color:var(--text-dim);transition:all 0.2s;" onmouseover="this.style.borderColor='#10b981';this.style.color='#10b981'" onmouseout="this.style.borderColor='#1e2430';this.style.color='#6b7280'">
+        <span>📐</span> Cấu trúc HH/HL/LH/LL
+      </a>
+      <a href="tips_tricks.html#psychology2" style="text-decoration:none;display:flex;align-items:center;gap:0.6rem;padding:0.6rem 0.8rem;background:var(--surface2);border:1px solid var(--border);border-radius:5px;font-size:0.78rem;color:var(--text-dim);transition:all 0.2s;" onmouseover="this.style.borderColor='#a78bfa';this.style.color='#a78bfa'" onmouseout="this.style.borderColor='#1e2430';this.style.color='#6b7280'">
+        <span>🏆</span> Tâm lý 10 năm thực chiến
+      </a>
+      <a href="beginners_guide.html#supplydemand" style="text-decoration:none;display:flex;align-items:center;gap:0.6rem;padding:0.6rem 0.8rem;background:var(--surface2);border:1px solid var(--border);border-radius:5px;font-size:0.78rem;color:var(--text-dim);transition:all 0.2s;" onmouseover="this.style.borderColor='#3b82f6';this.style.color='#3b82f6'" onmouseout="this.style.borderColor='#1e2430';this.style.color='#6b7280'">
+        <span>🔗</span> Cung Cầu ↔ Ichimoku
+      </a>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-logo">一目均衡表</div>
+  <div class="footer-meta">
+    <span>DSmart Trading Knowledge</span>
+    <div class="footer-dot"></div>
+    <span>Nguồn: NotebookLM EXNESS × Claude MCP</span>
+    <div class="footer-dot"></div>
+    <span>Chỉ mang tính giáo dục — không phải lời khuyên đầu tư</span>
+  </div>
+</footer>
+
+<button id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+<script>
+window.addEventListener('scroll',()=>{document.getElementById('scrollTop').classList.toggle('visible',window.scrollY>400);});
+</script>
+</body>
+</html>
